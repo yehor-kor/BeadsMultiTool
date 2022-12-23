@@ -4,19 +4,19 @@
 * {
   box-sizing: border-box;
   margin: 0;
-  padding: 0
+  padding: 0;
 }
 
 ::selection {
   color: #000;
-  background: red
+  background: red;
 }
 
 body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  background-color: #fff
+  background-color: #fff;
 }
 
 header {
@@ -34,7 +34,7 @@ header {
 
 .logo-text {
   margin-left: 15px;
-  margin-right: 2%
+  margin-right: 2%;
 }
 
 .logo-wrap {
@@ -146,7 +146,7 @@ main {
 }
 
 .main-2 {
-  background: linear-gradient(to right, #3850b8, #60cfa5)
+  background: linear-gradient(to right, #3850b8, #60cfa5);
 }
 
 .main-3 {
@@ -236,7 +236,7 @@ footer {
     transform: scale(1);
   }
   50% {
-    transform: scale(0.75);
+    transform: scale(0.6);
   }
   100% {
     transform: scale(1);
