@@ -30,7 +30,7 @@ body {
 .title-doc > a {
   margin-left: 50px;
   text-decoration: none;
-  text-shadow:#000 2px 2px;
+  text-shadow: #000 2px 2px;
   cursor: pointer;
   color: #fff;
 }
