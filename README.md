@@ -4,8 +4,8 @@ The offline program with which you can draw a new beaded patterns - they are sui
 
 + [BeadsMultiTool - your beautiful dream](https://yehor-kor.github.io/BeadsMultiTool/beads-multi-tool.html "Main page of the program")
 
-![alt text](./img/pics/icon-512x512.png "Icon Owner Of The Shop on Etsy")
-![alt text](./img/pics/icon2-512x512.png "Icon BeadsMultiTool")
+![alt text](./img/pics/icon-192x192.png "Icon Owner Of The Shop on Etsy")
+![alt text](./img/pics/icon2-192x192.png "Icon BeadsMultiTool")
 
 ## Instructions Guide
 
