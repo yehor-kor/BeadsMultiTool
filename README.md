@@ -9,7 +9,7 @@ The offline program with which you can draw a new beaded patterns - they are sui
 
 ## Instructions Guide
 
-###WAIT FOR THE NEXT GLOBAL UPDATE AT BRANCH DEVELOP!!!
+### WAIT FOR THE NEXT GLOBAL UPDATE AT BRANCH DEVELOP!!!
 
 The next series are coming soon...
 
