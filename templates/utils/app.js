@@ -1,35 +1,37 @@
-let arrowUp = document.querySelectorAll(".move-up")[0],
+let arrowUp = document.querySelectorAll('.move-up')[0],
+  switchTheme = document.querySelectorAll('.switch > input[type="checkbox"]')[0],
   rangeTwoSpecial1,
   rangeTwoSpecial2,
   rangeTwoSpecial3,
   rangeTwoSpecial123,
-  bicerHoverColor,
   input,
   input2,
   div,
   count,
-  color0 = document.getElementById("color"),
-  color = document.getElementById("color").value,
-  title = document.getElementsByTagName("title")[0].textContent,
+  bicerHoverColor = '#81e640',
+  drawColor = '#ff0000',
+  color0 = document.querySelectorAll('.color')[0],
+  color = document.querySelectorAll('.color')[0].value,
+  title = document.getElementsByTagName('title')[0].textContent,
   titleVersion = +title.match(/\d+(?=[.])/),
-  bicer = document.getElementsByClassName("bicer"),
-  indicator = document.getElementsByClassName("indicator"),
-  rangeTwo = document.querySelectorAll(".range.two"),
-  rangeLast = document.querySelector(".range.last:last-child"),
-  fileSaveButton = document.querySelector("#fileSave"),
-  fileSaveJSONButton = document.querySelector("#fileSaveJSON"),
-  fileSavePDFButton = document.querySelector("#fileSavePDF"),
-  fileLoadButton = document.querySelector("#fileLoad"),
-  fileLoadButtonHide = document.querySelector("#fileLoadHide"),
-  htmlPage = document.getElementsByTagName("html")[0],
-  drawButton = document.getElementById("drawButton"),
-  clearButton = document.getElementById("clearButton"),
-  drawAllButton = document.getElementById("drawAllButton"),
-  colorView = document.getElementById("colorView"),
+  bicer = document.getElementsByClassName('bicer'),
+  indicator = document.getElementsByClassName('indicator'),
+  rangeTwo = document.querySelectorAll('.range.two'),
+  rangeLast = document.querySelector('.range.last:last-child'),
+  fileSaveButton = document.querySelectorAll('.fileSave')[0],
+  fileSaveJSONButton = document.querySelectorAll('.fileSaveJSON')[0],
+  fileSavePDFButton = document.querySelectorAll('.fileSavePDF')[0],
+  fileLoadButton = document.querySelectorAll('.fileLoad')[0],
+  fileLoadButtonHide = document.querySelectorAll('.fileLoadHide')[0],
+  htmlPage = document.getElementsByTagName('html')[0],
+  drawButton = document.querySelectorAll('.drawButton')[0],
+  clearButton = document.querySelectorAll('.clearButton')[0],
+  drawAllButton = document.querySelectorAll('.drawAllButton')[0],
+  colorView = document.querySelectorAll('.colorView')[0],
   drawButtonIsFocus = !0,
   clearButtonIsFocus = !1,
   colorViewIsFocus = !1,
-  width = document.getElementById("width"),
+  width = document.querySelectorAll('.width')[0],
   widthNormal = 7,
   isFinished = !1,
   drawAccept = !0,
@@ -89,11 +91,11 @@ function loadJSON() {
             );
           bicer = document.getElementsByClassName("bicer");
           for (let e = 0; e < bicer.length; e++)
-            bicer[e].style.backgroundColor = "#ffffff";
+            bicer[e].style.backgroundColor = "transparent";
           console.log(`${e.name} - ${t}`), prettyLog(0);
         } else
           -1 == r
-            ? ((document.getElementById("width").value = +t.match(/\d+/)),
+            ? ((document.querySelectorAll(".width")[0].value = +t.match(/\d+/)),
               changeWidth())
             : (bicer[r].style.backgroundColor = t);
         r++;
@@ -119,7 +121,7 @@ function saveJSON() {
       let e = `v${titleVersion}`;
       t.push(e);
     } else if (-1 == o) {
-      let e = `w${+document.getElementById("width").value}`;
+      let e = `w${+document.querySelectorAll(".width")[0].value}`;
       t.push(e);
     } else
       (e = rgbToHexNums(
@@ -129,7 +131,7 @@ function saveJSON() {
   let o = JSON.stringify(t),
     l = `beads_save_v${titleVersion}`,
     r = new File([o], l, { type: "application/json" }),
-    n = document.getElementById("linkForSavingFile");
+    n = document.querySelectorAll(".linkForSavingFile")[0];
   (n.href = URL.createObjectURL(r)),
     (n.download = l),
     n.click(),
@@ -176,7 +178,7 @@ function findNums(e) {
 }
 
 function changeWidth() {
-  let e = +document.getElementById("width").value;
+  let e = +document.querySelectorAll(".width")[0].value;
   if (e > widthNormal)
     if (e < 27) {
       for (let t = 0; t < e - widthNormal; t++) {
@@ -216,7 +218,7 @@ function changeWidth() {
           z++;
       }
       (widthNormal = e), start();
-    } else document.getElementById("width").value = 26;
+    } else document.querySelectorAll(".width")[0].value = 26;
   else if (e < widthNormal)
     if (e > 1) {
       for (let t = 0; t < Math.abs(e - widthNormal); t++) {
@@ -253,7 +255,7 @@ function changeWidth() {
           z--;
       }
       (widthNormal = e), start();
-    } else document.getElementById("width").value = 2;
+    } else document.querySelectorAll(".width")[0].value = 2;
   if ("Earrings v7.0" != title || isFinished)
     if (("Earrings v8.0" != title && "Earrings v9.0" != title) || isFinished) {
       if ("Earrings v10.0" == title && !isFinished) {
@@ -298,6 +300,9 @@ function changeWidth() {
 }
 
 function start() {
+  color0.value = drawColor;
+  color = document.querySelectorAll('.color')[0].value;
+  
   for (let e = 0; e < bicer.length; e++) {
     (bicer[e].onmousedown = function (t) {
       if (drawAccept && 1 == t.which && !pipette) {
@@ -312,11 +317,11 @@ function start() {
           (color0.value = rgbToHexNums(t)), (pipette = !1), drawButton.click();
         } else {
           pipette && "#81e640" == bicerHoverColor
-            ? ((color = "#ffffff"), drawButton.click())
+            ? ((color = "transparent"), drawButton.click())
             : pipette && ((pipette = !1), drawButton.click());
         }
       else {
-        (this.style.backgroundColor = "#ffffff"), (lineAccept = !0);
+        (this.style.backgroundColor = "transparent"), (lineAccept = !0);
         for (let t = 0; t < bicer.length; t++) t == e && delete colors[t];
       }
       pipette ||
@@ -332,7 +337,7 @@ function start() {
           this.style.backgroundColor = color;
           for (let t = 0; t < bicer.length; t++) t == e && (colors[t] = color);
         } else if (lineAccept && !pipette) {
-          this.style.backgroundColor = "#ffffff";
+          this.style.backgroundColor = "transparent";
           for (let t = 0; t < bicer.length; t++) t == e && delete colors[t];
         } else if (pipette && "#81e640" != bicerHoverColor) {
           let e = findNums(
@@ -340,7 +345,7 @@ function start() {
           );
           color0.value = rgbToHexNums(e);
         } else
-          pipette && "#81e640" == bicerHoverColor && (color0.value = "#ffffff");
+          pipette && "#81e640" == bicerHoverColor && (color0.value = "transparent");
       }),
       (bicer[e].onmousemove = function () {
         if (!pipette && "cell" == window.getComputedStyle(this).cursor)
@@ -359,7 +364,9 @@ function start() {
 }
 
 (document.body.onload = function () {
-  start(), changeWidth(), (drawButton.style.backgroundColor = "#7aff81");
+  start(), 
+  changeWidth(), 
+  (drawButton.style.backgroundColor = "#7aff81");
 }),
 (document.body.onerror = function () {
   setTimeout(() => {
@@ -371,9 +378,9 @@ function start() {
 }),
 (width.onchange = changeWidth),
 (color0.oninput = function () {
-  (color = document.getElementById("color").value),
-    (drawAccept = !0),
-    (pipette = !1);
+  (color = document.querySelectorAll(".color")[0].value),
+  (drawAccept = !0),
+  (pipette = !1);
 }),
 (drawAllButton.onmouseover = function () {
   drawAllButton.style.backgroundColor = "#7073ff";
@@ -479,26 +486,59 @@ function start() {
   return !1;
 });
 
-arrowUp.addEventListener("click", () => {
+arrowUp.addEventListener('click', () => {
   window.scrollTo({
     top: 0,
-    behavior: "smooth",
+    behavior: 'smooth',
   });
 }),
-window.addEventListener("scroll", () => {
-  if (arrowUp.classList == "move-up invisible"
-    && 200 <= document.documentElement.scrollTop) {
-    arrowUp.classList.remove("invisible");
+switchTheme.addEventListener('change', () => {
+  let allElems = document.querySelectorAll(".tools1 > *, .tools2 > *");
+
+  if (switchTheme.checked) {
+    document.body.classList.add('theme--dark');
+    for (let i = 0; i < allElems.length; i++) {
+      if (allElems[i].classList == "drawAllButton" 
+        || "colorView" 
+        || "drawButton" 
+        || "clearButton") {
+        allElems[i].classList.add('theme--semidark');
+      }
+      else {
+        allElems[i].classList.add('theme--dark');
+      }
+    }
   }
 
-  if (arrowUp.classList == "move-up animated" 
+  else if (!switchTheme.checked) {
+    document.body.classList.remove('theme--dark');
+    for (let i = 0; i < allElems.length; i++) {
+      if (allElems[i].classList == "drawAllButton" 
+        || "colorView" 
+        || "drawButton" 
+        || "clearButton") {
+        allElems[i].classList.remove('theme--semidark');
+      }
+      else {
+        allElems[i].classList.remove('theme--dark');
+      }
+    }
+  }
+}),
+window.addEventListener('scroll', () => {
+  if (arrowUp.classList == 'move-up invisible'
+    && 100 <= document.documentElement.scrollTop) {
+    arrowUp.classList.remove('invisible');
+  }
+
+  if (arrowUp.classList == 'move-up animated' 
     && 0 !== document.documentElement.scrollTop
-    && 200 <= document.documentElement.scrollTop) {
-    arrowUp.classList.remove("animated");
+    && 100 <= document.documentElement.scrollTop) {
+    arrowUp.classList.remove('animated');
   }
 
-  if (arrowUp.classList == "move-up" 
+  if (arrowUp.classList == 'move-up' 
     && 0 === document.documentElement.scrollTop) {
-    arrowUp.classList.add("animated");
+    arrowUp.classList.add('animated');
   }
 });

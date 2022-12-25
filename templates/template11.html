@@ -13,9 +13,10 @@
     <header class="title-doc">
       Earrings version 1.1
       <a href="../beads-multi-tool.html">Home Page</a>
-      <div class="switch">
-        <div class="arc"></div>
-      </div>
+      <label class="switch">
+        <input type="checkbox">
+        <span></span> 
+      </label>
     </header>
     <main>
       <div class="field">
@@ -627,30 +628,30 @@
         <span class="bicer indicator"></span>
       </div>
       <div class="tools1">
-        <input type="color" id="color" />
-        <img src="../img/tools/tool1.png" id="drawAllButton" />
-        <img src="../img/tools/tool2.png" id="colorView" />
-        <img src="../img/tools/tool3.png" id="drawButton" />
-        <img src="../img/tools/tool4.png" id="clearButton" />
+        <input type="color" class="color" />
+        <img src="../img/tools/tool1.png" class="drawAllButton" />
+        <img src="../img/tools/tool2.png" class="colorView" />
+        <img src="../img/tools/tool3.png" class="drawButton" />
+        <img src="../img/tools/tool4.png" class="clearButton" />
       </div>
       <div class="tools1">
-        <div id="fileSave">Save as...</div>
-        <div id="fileLoad">Open file</div>
+        <div class="fileSave">Save as...</div>
+        <div class="fileLoad">Open file</div>
         <input
           type="file"
-          id="fileLoadHide"
+          class="fileLoadHide"
           accept=".json"
           style="display: none"
         />
-        <a href="" id="linkForSavingFile" style="display: none"></a>
+        <a href="" class="linkForSavingFile" style="display: none"></a>
       </div>
       <div class="tools1 last">
-        <div id="fileSaveJSON" style="display: none">JSON</div>
-        <div id="fileSavePDF" style="display: none">PDF</div>
+        <div class="fileSaveJSON" style="display: none">JSON</div>
+        <div class="fileSavePDF" style="display: none">PDF</div>
       </div>
       <div class="tools2">
-        <span id="nameWidth">width</span>
-        <input type="number" id="width" value="13" />
+        <span class="nameWidth">width</span>
+        <input type="number" class="width" value="13" />
       </div>
       <div class="move-up invisible">
         <img src="../img/tools/up-arrow2.png" alt="Up">
