@@ -62,8 +62,8 @@ header {
 }
 
 .logo--large {
-  width: 450px;
-  height: 450px;
+  width: 500px;
+  height: 500px;
 }
 
 .logo--animated-fade {
@@ -237,12 +237,45 @@ footer {
   color: #fbff00;
 }
 
+.move-up {
+  position: fixed;
+  bottom: 100px;
+  right: 50px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  animation: live 1s linear;
+  z-index: 100;
+}
+
+.move-up:hover {
+  animation: increase 1s ease-in-out infinite alternate;
+}
+
+.invisible {
+  display: none;
+}
+
+.animated {
+  animation: lost 1s linear;
+  opacity: 0;
+  z-index: -1;
+}
+
+.move-up > img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-shadow: 0 0 20px #000;
+}
+
 @keyframes fade {
   0% {
     transform: scale(1);
   }
   50% {
-    transform: scale(0.6);
+    transform: scale(0.5);
   }
   100% {
     transform: scale(1);
@@ -255,6 +288,38 @@ footer {
   }
   100% {
     transform: translate(200%);
+  }
+}
+
+@keyframes increase {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes live {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes lost {
+  0% {
+    opacity: 1;
+    z-index: 100;
+  }
+
+  100% {
+    opacity: 0;
+    z-index: -1;
   }
 }
 

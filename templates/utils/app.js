@@ -1,4 +1,5 @@
-let rangeTwoSpecial1,
+let arrowUp = document.querySelectorAll(".move-up")[0],
+  rangeTwoSpecial1,
   rangeTwoSpecial2,
   rangeTwoSpecial3,
   rangeTwoSpecial123,
@@ -360,120 +361,144 @@ function start() {
 (document.body.onload = function () {
   start(), changeWidth(), (drawButton.style.backgroundColor = "#7aff81");
 }),
-  (document.body.onerror = function () {
-    setTimeout(() => {
-      alert("Something went wrong ( ⌒︹⌒ )\nThere was an error");
-    }, 250);
-  }),
-  (document.body.onmousemove = function (e) {
-    0 == e.which && (lineAccept = !1);
-  }),
-  (width.onchange = changeWidth),
-  (color0.oninput = function () {
-    (color = document.getElementById("color").value),
-      (drawAccept = !0),
-      (pipette = !1);
-  }),
-  (drawAllButton.onmouseover = function () {
-    drawAllButton.style.backgroundColor = "#7073ff";
-  }),
-  (drawButton.onmouseover = function () {
-    drawButton.style.backgroundColor = "#7073ff";
-  }),
-  (clearButton.onmouseover = function () {
-    clearButton.style.backgroundColor = "#7073ff";
-  }),
-  (colorView.onmouseover = function () {
-    colorView.style.backgroundColor = "#7073ff";
-  }),
-  (drawAllButton.onmouseout = function () {
-    drawAllButton.style.backgroundColor = "#a9aff1";
-  }),
-  (drawButton.onmouseout = function () {
-    drawButton.style.backgroundColor = drawButtonIsFocus
-      ? "#7aff81"
-      : "#a9aff1";
-  }),
-  (clearButton.onmouseout = function () {
-    clearButton.style.backgroundColor = clearButtonIsFocus
-      ? "#7aff81"
-      : "#a9aff1";
-  }),
-  (colorView.onmouseout = function () {
-    colorView.style.backgroundColor = colorViewIsFocus ? "#7aff81" : "#a9aff1";
-  }),
-  (drawButton.onclick = function () {
+(document.body.onerror = function () {
+  setTimeout(() => {
+    alert("Something went wrong ( ⌒︹⌒ )\nThere was an error");
+  }, 250);
+}),
+(document.body.onmousemove = function (e) {
+  0 == e.which && (lineAccept = !1);
+}),
+(width.onchange = changeWidth),
+(color0.oninput = function () {
+  (color = document.getElementById("color").value),
     (drawAccept = !0),
-      (clearButtonIsFocus = !1),
-      (colorViewIsFocus = !1),
-      (drawButtonIsFocus = !0) &&
-        ((drawButton.style.backgroundColor = "#7aff81"),
-        (clearButton.style.backgroundColor = "#a9aff1"),
-        (colorView.style.backgroundColor = "#a9aff1"));
-  }),
-  (clearButton.onclick = function () {
-    (drawAccept = !1),
-      (drawButtonIsFocus = !1),
-      (colorViewIsFocus = !1),
-      (clearButtonIsFocus = !0) &&
-        ((drawButton.style.backgroundColor = "#a9aff1"),
-        (clearButton.style.backgroundColor = "#7aff81"),
-        (colorView.style.backgroundColor = "#a9aff1"));
-  }),
-  (colorView.onclick = function () {
-    if (pipette) {
-      if (pipette) {
-        for (let e = 0; e < bicer.length; e++)
-          bicer[e].style.cursor = "crosshair";
-        pipette = !1;
-      }
-    } else {
-      for (let e = 0; e < bicer.length; e++) bicer[e].style.cursor = "cell";
-      pipette = !0;
-    }
+    (pipette = !1);
+}),
+(drawAllButton.onmouseover = function () {
+  drawAllButton.style.backgroundColor = "#7073ff";
+}),
+(drawButton.onmouseover = function () {
+  drawButton.style.backgroundColor = "#7073ff";
+}),
+(clearButton.onmouseover = function () {
+  clearButton.style.backgroundColor = "#7073ff";
+}),
+(colorView.onmouseover = function () {
+  colorView.style.backgroundColor = "#7073ff";
+}),
+(drawAllButton.onmouseout = function () {
+  drawAllButton.style.backgroundColor = "#a9aff1";
+}),
+(drawButton.onmouseout = function () {
+  drawButton.style.backgroundColor = drawButtonIsFocus
+    ? "#7aff81"
+    : "#a9aff1";
+}),
+(clearButton.onmouseout = function () {
+  clearButton.style.backgroundColor = clearButtonIsFocus
+    ? "#7aff81"
+    : "#a9aff1";
+}),
+(colorView.onmouseout = function () {
+  colorView.style.backgroundColor = colorViewIsFocus ? "#7aff81" : "#a9aff1";
+}),
+(drawButton.onclick = function () {
+  (drawAccept = !0),
+    (clearButtonIsFocus = !1),
+    (colorViewIsFocus = !1),
+    (drawButtonIsFocus = !0) &&
+      ((drawButton.style.backgroundColor = "#7aff81"),
+      (clearButton.style.backgroundColor = "#a9aff1"),
+      (colorView.style.backgroundColor = "#a9aff1"));
+}),
+(clearButton.onclick = function () {
+  (drawAccept = !1),
     (drawButtonIsFocus = !1),
-      (clearButtonIsFocus = !1),
-      (colorViewIsFocus = !0) &&
-        ((drawButton.style.backgroundColor = "#a9aff1"),
-        (clearButton.style.backgroundColor = "#a9aff1"),
-        (colorView.style.backgroundColor = "#7aff81"));
-  }),
-  (drawAllButton.onclick = function () {
-    for (let e = 0; e < bicer.length; e++)
-      e >= bicer.length - indicator.length ||
-        (bicer[e].style.backgroundColor = color);
-    (pipette = !1), drawButton.click();
-  }),
-  (color0.onclick = function () {
-    drawButton.click();
-  }),
-  (fileSaveButton.onclick = function () {
-    "none" == fileSaveJSONButton.style.display &&
-    "none" == fileSavePDFButton.style.display
-      ? ((fileSaveJSONButton.style.display = "block"),
-        (fileSavePDFButton.style.display = "block"))
-      : ((fileSaveJSONButton.style.display = "none"),
-        (fileSavePDFButton.style.display = "none"));
-  }),
-  (fileSaveJSONButton.onmousedown = function () {
-    (fileSaveJSONButton.style.display = "none"),
-      (fileSavePDFButton.style.display = "none"),
-      setTimeout(saveJSON, 100);
-  }),
-  (fileSavePDFButton.onmousedown = function () {
-    (fileSaveJSONButton.style.display = "none"),
-      (fileSavePDFButton.style.display = "none"),
-      setTimeout(savePDF, 100);
-  }),
-  (fileLoadButtonHide.onchange = function () {
-    loadJSON();
-  }),
-  (fileLoadButton.onclick = function () {
-    fileLoadButtonHide.click();
-  }),
-  (htmlPage.oncontextmenu = function () {
-    return !1;
-  }),
-  (htmlPage.ondragstart = function () {
-    return !1;
+    (colorViewIsFocus = !1),
+    (clearButtonIsFocus = !0) &&
+      ((drawButton.style.backgroundColor = "#a9aff1"),
+      (clearButton.style.backgroundColor = "#7aff81"),
+      (colorView.style.backgroundColor = "#a9aff1"));
+}),
+(colorView.onclick = function () {
+  if (pipette) {
+    if (pipette) {
+      for (let e = 0; e < bicer.length; e++)
+        bicer[e].style.cursor = "crosshair";
+      pipette = !1;
+    }
+  } else {
+    for (let e = 0; e < bicer.length; e++) bicer[e].style.cursor = "cell";
+    pipette = !0;
+  }
+  (drawButtonIsFocus = !1),
+    (clearButtonIsFocus = !1),
+    (colorViewIsFocus = !0) &&
+      ((drawButton.style.backgroundColor = "#a9aff1"),
+      (clearButton.style.backgroundColor = "#a9aff1"),
+      (colorView.style.backgroundColor = "#7aff81"));
+}),
+(drawAllButton.onclick = function () {
+  for (let e = 0; e < bicer.length; e++)
+    e >= bicer.length - indicator.length ||
+      (bicer[e].style.backgroundColor = color);
+  (pipette = !1), drawButton.click();
+}),
+(color0.onclick = function () {
+  drawButton.click();
+}),
+(fileSaveButton.onclick = function () {
+  "none" == fileSaveJSONButton.style.display &&
+  "none" == fileSavePDFButton.style.display
+    ? ((fileSaveJSONButton.style.display = "block"),
+      (fileSavePDFButton.style.display = "block"))
+    : ((fileSaveJSONButton.style.display = "none"),
+      (fileSavePDFButton.style.display = "none"));
+}),
+(fileSaveJSONButton.onmousedown = function () {
+  (fileSaveJSONButton.style.display = "none"),
+    (fileSavePDFButton.style.display = "none"),
+    setTimeout(saveJSON, 100);
+}),
+(fileSavePDFButton.onmousedown = function () {
+  (fileSaveJSONButton.style.display = "none"),
+    (fileSavePDFButton.style.display = "none"),
+    setTimeout(savePDF, 100);
+}),
+(fileLoadButtonHide.onchange = function () {
+  loadJSON();
+}),
+(fileLoadButton.onclick = function () {
+  fileLoadButtonHide.click();
+}),
+(htmlPage.oncontextmenu = function () {
+  return !1;
+}),
+(htmlPage.ondragstart = function () {
+  return !1;
+});
+
+arrowUp.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
   });
+}),
+window.addEventListener("scroll", () => {
+  if (arrowUp.classList == "move-up invisible"
+    && 200 <= document.documentElement.scrollTop) {
+    arrowUp.classList.remove("invisible");
+  }
+
+  if (arrowUp.classList == "move-up animated" 
+    && 0 !== document.documentElement.scrollTop
+    && 200 <= document.documentElement.scrollTop) {
+    arrowUp.classList.remove("animated");
+  }
+
+  else if (arrowUp.classList == "move-up" 
+    && 0 === document.documentElement.scrollTop) {
+    arrowUp.classList.add("animated");
+  }
+});
