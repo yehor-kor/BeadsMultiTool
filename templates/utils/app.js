@@ -497,7 +497,7 @@ window.addEventListener("scroll", () => {
     arrowUp.classList.remove("animated");
   }
 
-  else if (arrowUp.classList == "move-up" 
+  if (arrowUp.classList == "move-up" 
     && 0 === document.documentElement.scrollTop) {
     arrowUp.classList.add("animated");
   }
