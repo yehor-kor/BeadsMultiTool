@@ -9,7 +9,11 @@
     <title>Earrings v3.0</title>
   </head>
 
-  <body>
+  <body class="hidden">
+    <section class="preloader">
+      <div class="loading"></div>
+    </section>
+    
     <header class="title-doc">
       Earrings version 3
       <a href="../beads-multi-tool.html">Home Page</a>
@@ -736,6 +740,7 @@
       </div>
     </main>
 
-    <script src="./utils/app.js"></script>
+    <script defer src="../utils/preloader.js"></script>
+    <script defer src="./utils/app.js"></script>
   </body>
 </html>

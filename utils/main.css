@@ -32,6 +32,28 @@ header {
   user-select: none;
 }
 
+.preloader {
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #a488f0;
+  z-index: 1000;
+}
+
+.loading {
+  width: 300px;
+  height: 50px;
+  box-shadow: 10px 10px 10px #38910e;
+  background-color: #74d30e;
+  animation: loading 1s ease-out infinite;
+}
+
 .logo-text {
   margin-left: 15px;
   margin-right: 2%;
@@ -257,6 +279,10 @@ footer {
   display: none;
 }
 
+.hidden {
+  overflow: hidden;
+}
+
 .animated {
   animation: lost 1s linear;
   opacity: 0;
@@ -268,6 +294,18 @@ footer {
   height: 60px;
   border-radius: 50%;
   box-shadow: 0 0 20px #000;
+}
+
+@keyframes loading {
+  0% {
+    transform: scaleX(0);
+    background-color: #d9ff00;
+  }
+
+  100% {
+    transform: scaleX(1);
+    background-color: #74d30e;
+  }
 }
 
 @keyframes fade {
