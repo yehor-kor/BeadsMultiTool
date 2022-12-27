@@ -311,7 +311,7 @@ function start() {
   }
 }
 
-(document.body.onload = function () {
+(window.onload = function () {
   start(), 
   changeWidth(), 
   (drawButton.style.backgroundColor = "#7aff81");

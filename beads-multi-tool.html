@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="./utils/main.css" />
     <title>BeadsMultiTool</title>
   </head>
-  <body>
+  <body class="hidden">
+    <section class="preloader">
+      <div class="loading"></div>
+    </section>
+    
     <header>
       <div class="logo-text">
         <span>KorTania</span>
@@ -155,6 +159,7 @@
       </div>
     </footer>
 
-    <script src="./utils/scroll.js"></script>
+    <script defer src="./utils/preloader.js"></script>
+    <script defer src="./utils/scroll.js"></script>
   </body>
 </html>

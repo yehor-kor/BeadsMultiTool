@@ -16,6 +16,41 @@ body {
   overflow-y: scroll;
 }
 
+.preloader {
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #a488f0;
+  z-index: 1000;
+}
+
+.dual-ring {
+  display: inline-block;
+  width: 200px;
+  height: 200px;
+}
+
+.dual-ring:after {
+  content: " ";
+  display: block;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  border: 15px solid #fff;
+  border-color: #9dff00 transparent #9dff00 transparent;
+  animation: dual-ring 1s linear infinite;
+}
+
+.hidden {
+  overflow: hidden;
+}
+
 .title-doc {
   display: flex;
   justify-content: center;
@@ -324,6 +359,15 @@ main {
 .theme--semidark {
   border-color: #fff;
   color: #fff;
+}
+
+@keyframes dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes increase {
