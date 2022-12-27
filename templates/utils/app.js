@@ -179,7 +179,8 @@ function findNums(e) {
 
 function changeWidth() {
   let e = +document.querySelectorAll(".width")[0].value;
-  if (e > widthNormal)
+
+  if (e > widthNormal) {
     if (e < 27) {
       for (let t = 0; t < e - widthNormal; t++) {
         for (let e = 0; e < rangeTwo.length; e++)
@@ -194,32 +195,22 @@ function changeWidth() {
         (rangeLast = document.querySelector(".range.last:last-child")).after(
           div
         ),
-          "Earrings v2.0" == title ||
-          "Earrings v5.0" == title ||
-          "Earrings v9.0" == title
+          "Earrings v2.0" == title
             ? ((div = div.cloneNode(div)), rangeLast.after(div))
             : ("Earrings v3.0" != title &&
-                "Earrings v6.0" != title &&
-                "Earrings v7.0" != title &&
-                "Earrings v10.0" != title) ||
+                "Earrings v5.0" != title) ||
               ((div = div.cloneNode(div)),
               rangeLast.after(div),
               (div = div.cloneNode(div)),
               rangeLast.after(div)),
-          "Earrings v7.0" == title
-            ? ((rangeTwoSpecial1 = document.querySelectorAll(".special1")),
-              (rangeTwoSpecial2 = document.querySelectorAll(".special2")))
-            : "Earrings v8.0" == title || "Earrings v9.0" == title
-            ? ((rangeTwoSpecial1 = document.querySelectorAll(".special1")),
-              (rangeTwoSpecial2 = document.querySelectorAll(".special2")),
-              (rangeTwoSpecial3 = document.querySelectorAll(".special3")))
-            : "Earrings v10.0" == title &&
-              (rangeTwoSpecial123 = document.querySelectorAll(".special123")),
+          "Earrings v5.0" == title &&
+            (rangeTwoSpecial123 = document.querySelectorAll(".special123")),
           z++;
       }
       (widthNormal = e), start();
     } else document.querySelectorAll(".width")[0].value = 26;
-  else if (e < widthNormal)
+  }
+  else if (e < widthNormal) {
     if (e > 1) {
       for (let t = 0; t < Math.abs(e - widthNormal); t++) {
         for (let e = 0; e < rangeTwo.length; e++)
@@ -227,73 +218,30 @@ function changeWidth() {
             .querySelectorAll(".range.two > .bicer:last-child")
             [e].remove();
         (rangeLast = document.querySelector(".range.last:last-child")).remove(),
-          "Earrings v2.0" == title ||
-          "Earrings v5.0" == title ||
-          "Earrings v9.0" == title
+          "Earrings v2.0" == title
             ? (rangeLast = document.querySelector(
                 ".range.last:last-child"
               )).remove()
             : ("Earrings v3.0" != title &&
-                "Earrings v6.0" != title &&
-                "Earrings v7.0" != title &&
-                "Earrings v10.0" != title) ||
+                "Earrings v5.0" != title) ||
               ((rangeLast = document.querySelector(
                 ".range.last:last-child"
               )).remove(),
               (rangeLast = document.querySelector(
                 ".range.last:last-child"
               )).remove()),
-          "Earrings v7.0" == title
-            ? ((rangeTwoSpecial1 = document.querySelectorAll(".special1")),
-              (rangeTwoSpecial2 = document.querySelectorAll(".special2")))
-            : "Earrings v8.0" == title || "Earrings v9.0" == title
-            ? ((rangeTwoSpecial1 = document.querySelectorAll(".special1")),
-              (rangeTwoSpecial2 = document.querySelectorAll(".special2")),
-              (rangeTwoSpecial3 = document.querySelectorAll(".special3")))
-            : "Earrings v10.0" == title &&
-              (rangeTwoSpecial123 = document.querySelectorAll(".special123")),
+          "Earrings v5.0" == title &&
+            (rangeTwoSpecial123 = document.querySelectorAll(".special123")),
           z--;
       }
       (widthNormal = e), start();
     } else document.querySelectorAll(".width")[0].value = 2;
-  if ("Earrings v7.0" != title || isFinished)
-    if (("Earrings v8.0" != title && "Earrings v9.0" != title) || isFinished) {
-      if ("Earrings v10.0" == title && !isFinished) {
-        for (let e = 0; e < 4; e++)
-          for (let e = 0; e < rangeTwoSpecial123.length; e++)
-            document
-              .querySelectorAll(".range.two.special123 > .bicer:last-child")
-              [e].remove();
-        isFinished = !0;
-      }
-    } else {
-      for (let e = 0; e < 2; e++)
-        for (let e = 0; e < rangeTwoSpecial3.length; e++)
-          document
-            .querySelectorAll(".range.two.special3 > .bicer:last-child")
-            [e].remove();
-      for (let e = 0; e < 4; e++)
-        for (let e = 0; e < rangeTwoSpecial1.length; e++)
-          document
-            .querySelectorAll(".range.two.special1 > .bicer:last-child")
-            [e].remove();
-      for (let e = 0; e < 6; e++)
-        for (let e = 0; e < rangeTwoSpecial2.length; e++)
-          document
-            .querySelectorAll(".range.two.special2 > .bicer:last-child")
-            [e].remove();
-      isFinished = !0;
-    }
-  else {
-    for (let e = 0; e < 2; e++)
-      for (let e = 0; e < rangeTwoSpecial1.length; e++)
-        document
-          .querySelectorAll(".range.two.special1 > .bicer:last-child")
-          [e].remove();
+  }
+  if ("Earrings v5.0" == title && !isFinished) {
     for (let e = 0; e < 4; e++)
-      for (let e = 0; e < rangeTwoSpecial2.length; e++)
+      for (let e = 0; e < rangeTwoSpecial123.length; e++)
         document
-          .querySelectorAll(".range.two.special2 > .bicer:last-child")
+          .querySelectorAll(".range.two.special123 > .bicer:last-child")
           [e].remove();
     isFinished = !0;
   }
