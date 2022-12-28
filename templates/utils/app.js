@@ -1,23 +1,17 @@
 let arrowUp = document.querySelectorAll('.move-up')[0],
   switchTheme = document.querySelectorAll('.switch > input[type="checkbox"]')[0],
-  rangeTwoSpecial1,
-  rangeTwoSpecial2,
-  rangeTwoSpecial3,
-  rangeTwoSpecial123,
-  input,
-  input2,
-  div,
-  count,
-  bicerHoverColor = '#81e640',
-  drawColor = '#ff0000',
   color0 = document.querySelectorAll('.color')[0],
   color = document.querySelectorAll('.color')[0].value,
   title = document.getElementsByTagName('title')[0].textContent,
   titleVersion = +title.match(/\d+(?=[.])/),
   bicer = document.getElementsByClassName('bicer'),
   indicator = document.getElementsByClassName('indicator'),
-  rangeTwo = document.querySelectorAll('.range.two'),
-  rangeLast = document.querySelector('.range.last:last-child'),
+  row = document.querySelectorAll('.row'),
+  rowLast = document.querySelector('.row:last-child'),
+  rowUp = document.querySelectorAll('.up .row'),
+  rowUpLast = document.querySelector('.up .row:last-child'),
+  rowDown = document.querySelectorAll('.down .row'),
+  rowDownLast = document.querySelector('.down .row:last-child'),
   fileSaveButton = document.querySelectorAll('.fileSave')[0],
   fileSaveJSONButton = document.querySelectorAll('.fileSaveJSON')[0],
   fileSavePDFButton = document.querySelectorAll('.fileSavePDF')[0],
@@ -28,29 +22,43 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   clearButton = document.querySelectorAll('.clearButton')[0],
   drawAllButton = document.querySelectorAll('.drawAllButton')[0],
   colorView = document.querySelectorAll('.colorView')[0],
+  width = document.querySelectorAll('.width')[0],
+  length = document.querySelectorAll('.length')[0],
+  step = document.querySelectorAll('.step')[0],
+  widthNormal = 7,
+  lengthNormal = 1,
+  stepNormal = 0,
   drawButtonIsFocus = !0,
   clearButtonIsFocus = !1,
   colorViewIsFocus = !1,
-  width = document.querySelectorAll('.width')[0],
-  widthNormal = 7,
+  bicerHoverColor = '#81e640',
+  drawColor = '#ff0000',
   isFinished = !1,
   drawAccept = !0,
   lineAccept = !1,
   pipette = !1,
   colors = {},
-  z = 0;
+  z = 0,
+  rowSpecial1,
+  rowSpecial2,
+  rowSpecial3,
+  rowSpecial123,
+  rowDiv,
+  input,
+  input2,
+  count;
 
 function prettyLog(e) {
   0 == e
-    ? console.log("‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾")
-    : 180 == e && console.log("________________________________________");
+    ? console.log('‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾')
+    : 180 == e && console.log('________________________________________');
 }
 
 function loadJSON() {
   let e = fileLoadButtonHide.files[0];
   if (null == e) return;
-  if ("application/json" != e.type) {
-    if ("" != e.type) {
+  if ('application/json' != e.type) {
+    if ('' != e.type) {
       prettyLog(180), console.warn(e.type), console.warn(e.name), prettyLog(0);
       let t = e.type.match(/(?<=[/]).+/).toString();
       setTimeout(() => {
@@ -64,7 +72,7 @@ function loadJSON() {
         prettyLog(0),
         setTimeout(() => {
           alert(
-            "You have selected the incorrect file type ( ⌒︹⌒ )\nTry opening anything kind of JSON-file"
+            'You have selected the incorrect file type ( ⌒︹⌒ )\nTry opening anything kind of JSON-file'
           );
         }, 250);
     return;
@@ -89,31 +97,31 @@ function loadJSON() {
                 );
               }, 250)
             );
-          bicer = document.getElementsByClassName("bicer");
+          bicer = document.getElementsByClassName('bicer');
           for (let e = 0; e < bicer.length; e++)
-            bicer[e].style.backgroundColor = "transparent";
+            bicer[e].style.backgroundColor = 'transparent';
           console.log(`${e.name} - ${t}`), prettyLog(0);
         } else
           -1 == r
-            ? ((document.querySelectorAll(".width")[0].value = +t.match(/\d+/)),
+            ? ((document.querySelectorAll('.width')[0].value = +t.match(/\d+/)),
               changeWidth())
             : (bicer[r].style.backgroundColor = t);
         r++;
       }
       setTimeout(() => {
-        alert("All right! Keep up the good work ( ⌒‿⌒ )");
+        alert('All right! Keep up the good work ( ⌒‿⌒ )');
       }, 250);
     }),
     (t.onerror = () => {
       console.error(t.error),
         setTimeout(() => {
-          alert("Something went wrong ( ⌒︹⌒ )");
+          alert('Something went wrong ( ⌒︹⌒ )');
         }, 250);
     });
 }
 
 function saveJSON() {
-  bicer = document.getElementsByClassName("bicer");
+  bicer = document.getElementsByClassName('bicer');
   let e,
     t = [];
   for (let o = -2; o < bicer.length; o++)
@@ -121,7 +129,7 @@ function saveJSON() {
       let e = `v${titleVersion}`;
       t.push(e);
     } else if (-1 == o) {
-      let e = `w${+document.querySelectorAll(".width")[0].value}`;
+      let e = `w${+document.querySelectorAll('.width')[0].value}`;
       t.push(e);
     } else
       (e = rgbToHexNums(
@@ -130,13 +138,13 @@ function saveJSON() {
         t.push(e);
   let o = JSON.stringify(t),
     l = `beads_save_v${titleVersion}`,
-    r = new File([o], l, { type: "application/json" }),
-    n = document.querySelectorAll(".linkForSavingFile")[0];
+    r = new File([o], l, { type: 'application/json' }),
+    n = document.querySelectorAll('.linkForSavingFile')[0];
   (n.href = URL.createObjectURL(r)),
     (n.download = l),
     n.click(),
     setTimeout(() => {
-      alert("All right! Your file has been saved ( ⌒‿⌒ )");
+      alert('All right! Your file has been saved ( ⌒‿⌒ )');
     }, 250);
 }
 
@@ -145,8 +153,8 @@ function savePDF() {
 }
 
 function rgbToHexNums(e) {
-  let t = String(e.replace(/\d+/, "")),
-    o = String(t.replace(/\d+/, "")),
+  let t = String(e.replace(/\d+/, '')),
+    o = String(t.replace(/\d+/, '')),
     l = +e.match(/\d+/),
     r = +t.match(/\d+/),
     n = +o.match(/\d+/);
@@ -154,10 +162,10 @@ function rgbToHexNums(e) {
     (l = l.toString(16)),
     (r = r.toString(16)),
     (n = n.toString(16)),
-    1 == l.length && (l = "0" + l),
-    1 == r.length && (r = "0" + r),
-    1 == n.length && (n = "0" + n),
-    "#" + l + r + n
+    1 == l.length && (l = '0' + l),
+    1 == r.length && (r = '0' + r),
+    1 == n.length && (n = '0' + n),
+    '#' + l + r + n
   );
 }
 
@@ -166,10 +174,10 @@ function rgbToHex(e, t, o) {
     (e = e.toString(16)),
     (t = t.toString(16)),
     (o = o.toString(16)),
-    1 == e.length && (e = "0" + e),
-    1 == t.length && (t = "0" + t),
-    1 == o.length && (o = "0" + o),
-    "#" + e + t + o
+    1 == e.length && (e = '0' + e),
+    1 == t.length && (t = '0' + t),
+    1 == o.length && (o = '0' + o),
+    '#' + e + t + o
   );
 }
 
@@ -178,73 +186,120 @@ function findNums(e) {
 }
 
 function changeWidth() {
-  let e = +document.querySelectorAll(".width")[0].value;
+  let e = +document.querySelectorAll('.width')[0].value;
+  rowUp = document.querySelectorAll('.up .row');
 
   if (e > widthNormal) {
-    if (e < 27) {
-      for (let t = 0; t < e - widthNormal; t++) {
-        for (let e = 0; e < rangeTwo.length; e++)
-          ((input = document.createElement("span")).type = "button"),
-            (input.className = "bicer"),
-            rangeTwo[e].append(input);
-        (div = document.createElement("div")).className = "range last";
-        for (let e = 0; e < z + 8; e++)
-          ((input2 = document.createElement("span")).type = "button"),
-            (input2.className = "bicer"),
-            div.append(input2);
-        (rangeLast = document.querySelector(".range.last:last-child")).after(
-          div
+    if (e <= 60) {
+      for (let i = 0; i < e - widthNormal; i++) {
+        for (let j = 0; j < rowDown.length; j++) {
+          (input = document.createElement('span')),
+            (input.className = 'bicer'),
+            rowDown[j].append(input);
+        }
+        rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+        for (let j = 0; j < z + 8; j++) {
+          (input2 = document.createElement('span')),
+            (input2.className = 'bicer'),
+            rowDiv.append(input2);
+        }
+        (rowUpLast = document.querySelector('.up .row:last-child')).after(
+          rowDiv
         ),
-          "Earrings v2.0" == title
-            ? ((div = div.cloneNode(div)), rangeLast.after(div))
-            : ("Earrings v3.0" != title &&
-                "Earrings v5.0" != title) ||
-              ((div = div.cloneNode(div)),
-              rangeLast.after(div),
-              (div = div.cloneNode(div)),
-              rangeLast.after(div)),
-          "Earrings v5.0" == title &&
-            (rangeTwoSpecial123 = document.querySelectorAll(".special123")),
+          'Earrings v2.0' == title
+            ? ((rowDiv = rowDiv.cloneNode(rowDiv)), rowUpLast.after(rowDiv))
+            : ('Earrings v3.0' != title &&
+                'Earrings v5.0' != title) ||
+              ((rowDiv = rowDiv.cloneNode(rowDiv)),
+              rowUpLast.after(rowDiv),
+              (rowDiv = rowDiv.cloneNode(rowDiv)),
+              rowUpLast.after(rowDiv)),
+          'Earrings v5.0' == title &&
+            (rowSpecial123 = document.querySelectorAll('.special123')),
           z++;
       }
-      (widthNormal = e), start();
-    } else document.querySelectorAll(".width")[0].value = 26;
+      widthNormal = e;
+      start();
+    }
   }
   else if (e < widthNormal) {
-    if (e > 1) {
-      for (let t = 0; t < Math.abs(e - widthNormal); t++) {
-        for (let e = 0; e < rangeTwo.length; e++)
+    if (e >= 2) {
+      for (let i = 0; i < Math.abs(e - widthNormal); i++) {
+        for (let j = 0; j < rowDown.length; j++) {
           document
-            .querySelectorAll(".range.two > .bicer:last-child")
-            [e].remove();
-        (rangeLast = document.querySelector(".range.last:last-child")).remove(),
-          "Earrings v2.0" == title
-            ? (rangeLast = document.querySelector(
-                ".range.last:last-child"
+            .querySelectorAll('.down .row .bicer:last-child')
+            [j].remove();
+        }
+        (rowUpLast = document.querySelector('.up .row:last-child')).remove(),
+          'Earrings v2.0' == title
+            ? (rowUpLast = document.querySelector(
+                '.up .row:last-child'
               )).remove()
-            : ("Earrings v3.0" != title &&
-                "Earrings v5.0" != title) ||
-              ((rangeLast = document.querySelector(
-                ".range.last:last-child"
+            : ('Earrings v3.0' != title &&
+                'Earrings v5.0' != title) ||
+              ((rowUpLast = document.querySelector(
+                '.up .row:last-child'
               )).remove(),
-              (rangeLast = document.querySelector(
-                ".range.last:last-child"
+              (rowUpLast = document.querySelector(
+                '.up .row:last-child'
               )).remove()),
-          "Earrings v5.0" == title &&
-            (rangeTwoSpecial123 = document.querySelectorAll(".special123")),
+          'Earrings v5.0' == title &&
+            (rowSpecial123 = document.querySelectorAll('.special123')),
           z--;
       }
-      (widthNormal = e), start();
-    } else document.querySelectorAll(".width")[0].value = 2;
+      widthNormal = e;
+      start();
+    }
   }
-  if ("Earrings v5.0" == title && !isFinished) {
-    for (let e = 0; e < 4; e++)
-      for (let e = 0; e < rangeTwoSpecial123.length; e++)
+  if ('Earrings v5.0' == title && !isFinished) {
+    for (let e = 0; e < 4; e++) {
+      for (let e = 0; e < rowSpecial123.length; e++) {
         document
-          .querySelectorAll(".range.two.special123 > .bicer:last-child")
+          .querySelectorAll('.row.special123 > .bicer:last-child')
           [e].remove();
+      }
+    }
     isFinished = !0;
   }
+}
+
+function changeLength() {
+  let e = +document.querySelectorAll('.length')[0].value;
+  rowDown = document.querySelectorAll('.down .row');
+
+  if (e > lengthNormal) {
+    if (e <= 150) {
+      for (let i = 0; i < e - lengthNormal; i++) {
+        let rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+        for (let j = 0; j < widthNormal; j++) {
+          input = document.createElement('span');
+          input.className = 'bicer';
+          rowDiv.append(input);
+        }
+        document.querySelector('.down').insertAdjacentElement(
+          "beforeend", 
+          rowDiv
+        );
+      }
+      lengthNormal = e;
+      start();
+    }
+  }
+  else if (e < lengthNormal) {
+    if (e >= 0) {
+      for (let i = 0; i < Math.abs(e - lengthNormal); i++) {
+        document.querySelector('.down .row:last-child').remove();
+      }
+      lengthNormal = e;
+      start();
+    }
+  }
+}
+
+function changeStep() {
+  // in the next updates
 }
 
 function start() {
@@ -258,23 +313,23 @@ function start() {
         for (let t = 0; t < bicer.length; t++) t == e && (colors[t] = color);
       }
       if (drawAccept || 1 != t.which || pipette)
-        if (pipette && "#81e640" != bicerHoverColor) {
+        if (pipette && '#81e640' != bicerHoverColor) {
           let t = findNums(
             (color = window.getComputedStyle(bicer[e]).backgroundColor)
           );
           (color0.value = rgbToHexNums(t)), (pipette = !1), drawButton.click();
         } else {
-          pipette && "#81e640" == bicerHoverColor
-            ? ((color = "transparent"), drawButton.click())
+          pipette && '#81e640' == bicerHoverColor
+            ? ((color = 'transparent'), drawButton.click())
             : pipette && ((pipette = !1), drawButton.click());
         }
       else {
-        (this.style.backgroundColor = "transparent"), (lineAccept = !0);
+        (this.style.backgroundColor = 'transparent'), (lineAccept = !0);
         for (let t = 0; t < bicer.length; t++) t == e && delete colors[t];
       }
       pipette ||
-        "cell" != window.getComputedStyle(this).cursor ||
-        (bicer[e].style.cursor = "crosshair");
+        'cell' != window.getComputedStyle(this).cursor ||
+        (bicer[e].style.cursor = 'crosshair');
     }),
       (bicer[e].onmouseover = function () {
         let t = findNums(window.getComputedStyle(this).backgroundColor);
@@ -285,114 +340,118 @@ function start() {
           this.style.backgroundColor = color;
           for (let t = 0; t < bicer.length; t++) t == e && (colors[t] = color);
         } else if (lineAccept && !pipette) {
-          this.style.backgroundColor = "transparent";
+          this.style.backgroundColor = 'transparent';
           for (let t = 0; t < bicer.length; t++) t == e && delete colors[t];
-        } else if (pipette && "#81e640" != bicerHoverColor) {
+        } else if (pipette && '#81e640' != bicerHoverColor) {
           let e = findNums(
             (color = window.getComputedStyle(this).backgroundColor)
           );
           color0.value = rgbToHexNums(e);
         } else
-          pipette && "#81e640" == bicerHoverColor && (color0.value = "transparent");
+          pipette && '#81e640' == bicerHoverColor && (color0.value = 'transparent');
       }),
       (bicer[e].onmousemove = function () {
-        if (!pipette && "cell" == window.getComputedStyle(this).cursor)
+        if (!pipette && 'cell' == window.getComputedStyle(this).cursor)
           for (let e = 0; e < bicer.length; e++)
-            bicer[e].style.cursor = "crosshair";
+            bicer[e].style.cursor = 'crosshair';
       }),
       (bicer[e].onmouseup = function () {
         (lineAccept = !1),
           (pipette = !1),
           0 != Object.keys(colors).length && count != Object.keys(colors).length
-            ? (console.log("Total - " + Object.keys(colors).length),
+            ? (console.log('Total - ' + Object.keys(colors).length),
               (count = Object.keys(colors).length))
-            : 0 == Object.keys(colors).length && console.log("Total - 0");
+            : 0 == Object.keys(colors).length && console.log('Total - 0');
       });
   }
 }
 
 (window.onload = function () {
-  start(), 
-  changeWidth(), 
-  (drawButton.style.backgroundColor = "#7aff81");
+  start(),
+  changeWidth(),
+  changeLength(),
+  changeStep(),
+  (drawButton.style.backgroundColor = '#7aff81');
 }),
 (document.body.onerror = function () {
   setTimeout(() => {
-    alert("Something went wrong ( ⌒︹⌒ )\nThere was an error");
+    alert('Something went wrong ( ⌒︹⌒ )\nThere was an error');
   }, 250);
 }),
 (document.body.onmousemove = function (e) {
   0 == e.which && (lineAccept = !1);
 }),
 (width.onchange = changeWidth),
+(length.onchange = changeLength),
+(step.onchange = changeStep),
 (color0.oninput = function () {
-  (color = document.querySelectorAll(".color")[0].value),
+  (color = document.querySelectorAll('.color')[0].value),
   (drawAccept = !0),
   (pipette = !1);
 }),
 (drawAllButton.onmouseover = function () {
-  drawAllButton.style.backgroundColor = "#7073ff";
+  drawAllButton.style.backgroundColor = '#7073ff';
 }),
 (drawButton.onmouseover = function () {
-  drawButton.style.backgroundColor = "#7073ff";
+  drawButton.style.backgroundColor = '#7073ff';
 }),
 (clearButton.onmouseover = function () {
-  clearButton.style.backgroundColor = "#7073ff";
+  clearButton.style.backgroundColor = '#7073ff';
 }),
 (colorView.onmouseover = function () {
-  colorView.style.backgroundColor = "#7073ff";
+  colorView.style.backgroundColor = '#7073ff';
 }),
 (drawAllButton.onmouseout = function () {
-  drawAllButton.style.backgroundColor = "#a9aff1";
+  drawAllButton.style.backgroundColor = '#a9aff1';
 }),
 (drawButton.onmouseout = function () {
   drawButton.style.backgroundColor = drawButtonIsFocus
-    ? "#7aff81"
-    : "#a9aff1";
+    ? '#7aff81'
+    : '#a9aff1';
 }),
 (clearButton.onmouseout = function () {
   clearButton.style.backgroundColor = clearButtonIsFocus
-    ? "#7aff81"
-    : "#a9aff1";
+    ? '#7aff81'
+    : '#a9aff1';
 }),
 (colorView.onmouseout = function () {
-  colorView.style.backgroundColor = colorViewIsFocus ? "#7aff81" : "#a9aff1";
+  colorView.style.backgroundColor = colorViewIsFocus ? '#7aff81' : '#a9aff1';
 }),
 (drawButton.onclick = function () {
   (drawAccept = !0),
     (clearButtonIsFocus = !1),
     (colorViewIsFocus = !1),
     (drawButtonIsFocus = !0) &&
-      ((drawButton.style.backgroundColor = "#7aff81"),
-      (clearButton.style.backgroundColor = "#a9aff1"),
-      (colorView.style.backgroundColor = "#a9aff1"));
+      ((drawButton.style.backgroundColor = '#7aff81'),
+      (clearButton.style.backgroundColor = '#a9aff1'),
+      (colorView.style.backgroundColor = '#a9aff1'));
 }),
 (clearButton.onclick = function () {
   (drawAccept = !1),
     (drawButtonIsFocus = !1),
     (colorViewIsFocus = !1),
     (clearButtonIsFocus = !0) &&
-      ((drawButton.style.backgroundColor = "#a9aff1"),
-      (clearButton.style.backgroundColor = "#7aff81"),
-      (colorView.style.backgroundColor = "#a9aff1"));
+      ((drawButton.style.backgroundColor = '#a9aff1'),
+      (clearButton.style.backgroundColor = '#7aff81'),
+      (colorView.style.backgroundColor = '#a9aff1'));
 }),
 (colorView.onclick = function () {
   if (pipette) {
     if (pipette) {
       for (let e = 0; e < bicer.length; e++)
-        bicer[e].style.cursor = "crosshair";
+        bicer[e].style.cursor = 'crosshair';
       pipette = !1;
     }
   } else {
-    for (let e = 0; e < bicer.length; e++) bicer[e].style.cursor = "cell";
+    for (let e = 0; e < bicer.length; e++) bicer[e].style.cursor = 'cell';
     pipette = !0;
   }
   (drawButtonIsFocus = !1),
     (clearButtonIsFocus = !1),
     (colorViewIsFocus = !0) &&
-      ((drawButton.style.backgroundColor = "#a9aff1"),
-      (clearButton.style.backgroundColor = "#a9aff1"),
-      (colorView.style.backgroundColor = "#7aff81"));
+      ((drawButton.style.backgroundColor = '#a9aff1'),
+      (clearButton.style.backgroundColor = '#a9aff1'),
+      (colorView.style.backgroundColor = '#7aff81'));
 }),
 (drawAllButton.onclick = function () {
   for (let e = 0; e < bicer.length; e++)
@@ -404,21 +463,21 @@ function start() {
   drawButton.click();
 }),
 (fileSaveButton.onclick = function () {
-  "none" == fileSaveJSONButton.style.display &&
-  "none" == fileSavePDFButton.style.display
-    ? ((fileSaveJSONButton.style.display = "block"),
-      (fileSavePDFButton.style.display = "block"))
-    : ((fileSaveJSONButton.style.display = "none"),
-      (fileSavePDFButton.style.display = "none"));
+  'none' == fileSaveJSONButton.style.display &&
+  'none' == fileSavePDFButton.style.display
+    ? ((fileSaveJSONButton.style.display = 'block'),
+      (fileSavePDFButton.style.display = 'block'))
+    : ((fileSaveJSONButton.style.display = 'none'),
+      (fileSavePDFButton.style.display = 'none'));
 }),
 (fileSaveJSONButton.onmousedown = function () {
-  (fileSaveJSONButton.style.display = "none"),
-    (fileSavePDFButton.style.display = "none"),
+  (fileSaveJSONButton.style.display = 'none'),
+    (fileSavePDFButton.style.display = 'none'),
     setTimeout(saveJSON, 100);
 }),
 (fileSavePDFButton.onmousedown = function () {
-  (fileSaveJSONButton.style.display = "none"),
-    (fileSavePDFButton.style.display = "none"),
+  (fileSaveJSONButton.style.display = 'none'),
+    (fileSavePDFButton.style.display = 'none'),
     setTimeout(savePDF, 100);
 }),
 (fileLoadButtonHide.onchange = function () {
@@ -434,22 +493,16 @@ function start() {
   return !1;
 });
 
-arrowUp.addEventListener('click', () => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  });
-}),
 switchTheme.addEventListener('change', () => {
-  let allElems = document.querySelectorAll(".tools1 > *, .tools2 > *");
+  let allElems = document.querySelectorAll('.tools1 *, .tools2 *');
 
   if (switchTheme.checked) {
     document.body.classList.add('theme--dark');
     for (let i = 0; i < allElems.length; i++) {
-      if (allElems[i].classList == "drawAllButton" 
-        || "colorView" 
-        || "drawButton" 
-        || "clearButton") {
+      if (allElems[i].classList == 'drawAllButton' 
+        || 'colorView' 
+        || 'drawButton' 
+        || 'clearButton') {
         allElems[i].classList.add('theme--semidark');
       }
       else {
@@ -457,14 +510,13 @@ switchTheme.addEventListener('change', () => {
       }
     }
   }
-
   else if (!switchTheme.checked) {
     document.body.classList.remove('theme--dark');
     for (let i = 0; i < allElems.length; i++) {
-      if (allElems[i].classList == "drawAllButton" 
-        || "colorView" 
-        || "drawButton" 
-        || "clearButton") {
+      if (allElems[i].classList == 'drawAllButton' 
+        || 'colorView' 
+        || 'drawButton' 
+        || 'clearButton') {
         allElems[i].classList.remove('theme--semidark');
       }
       else {
@@ -473,18 +525,22 @@ switchTheme.addEventListener('change', () => {
     }
   }
 }),
+arrowUp.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+}),
 window.addEventListener('scroll', () => {
   if (arrowUp.classList == 'move-up invisible'
     && 100 <= document.documentElement.scrollTop) {
     arrowUp.classList.remove('invisible');
   }
-
   if (arrowUp.classList == 'move-up animated' 
     && 0 !== document.documentElement.scrollTop
     && 100 <= document.documentElement.scrollTop) {
     arrowUp.classList.remove('animated');
   }
-
   if (arrowUp.classList == 'move-up' 
     && 0 === document.documentElement.scrollTop) {
     arrowUp.classList.add('animated');
