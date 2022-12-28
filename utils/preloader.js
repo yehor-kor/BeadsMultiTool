@@ -4,5 +4,5 @@ window.addEventListener("load", () => {
   setTimeout(() => {
     loader.style.display = "none";
     document.body.classList.remove("hidden");
-  }, 800);
+  }, 500);
 });
