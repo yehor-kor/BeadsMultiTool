@@ -51,29 +51,55 @@ body {
   overflow: hidden;
 }
 
-.title-doc {
+.header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 50px;
-  font-size: 30px;
+  font-size: 16px;
   font-family: cursive;
   text-align: center;
-  height: 50px;
-  padding: 5px 0;
+  height: 70px;
+  padding: 10px 20px;
+  user-select: none;
   background: linear-gradient(to right, #6f34dd, #60dbe4);
   color: #fbff00;
 }
 
-.title-doc > a {
+.header > h1 {
+  margin: 0;
+}
+
+.header__nav {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 50px;
+}
+
+.header__nav > a {
   text-decoration: none;
   text-shadow: #000 2px 2px;
   cursor: pointer;
   color: #fff;
 }
 
-.title-doc > a:hover {
+.header__nav > a:hover {
   text-decoration: underline;
+}
+
+.header__nav > h2 {
+  margin: 0;
+}
+
+.theme {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme > h2 {
+  margin: 0;
 }
 
 main {
@@ -90,7 +116,7 @@ main {
   align-items: center;
 }
 
-.range {
+.row {
   display: flex;
 }
 
@@ -111,9 +137,12 @@ main {
 }
 
 .vertical {
+  position: relative;
+  left: 25px;
+  top: 200px;
   display: flex;
   flex-direction: column;
-  margin: 400px 0 0 40px;
+  flex-direction: column-reverse;
 }
 
 .start {
@@ -125,23 +154,30 @@ main {
 }
 
 .tools1 {
+  position: fixed;
+  right: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 80px;
-}
-
-.tools1 + .last {
-  margin-left: 5px;
 }
 
 .tools2 {
+  position: fixed;
+  right: 20px;
+  bottom: 200px;
   display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  position: absolute;
-  right: 30%;
-  bottom: 15px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.menu-file {
+  position: fixed;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .color {
@@ -208,18 +244,28 @@ main {
   background-color: #fbff00;
 }
 
-.width {
-  margin-left: 5px;
+.block {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.width,
+.length,
+.step {
   border: 2px solid #000;
   border-radius: 5px;
   cursor: text;
   padding-left: 10px;
-  width: 55px;
+  width: 70px;
   font-size: 1.2em;
   background-color: transparent;
 }
 
-.nameWidth {
+.nameWidth,
+.nameLength,
+.nameStep {
   font-size: 1.3em;
 }
 
@@ -234,7 +280,7 @@ main {
   margin-bottom: 5px;
   cursor: pointer;
   border: 2px solid #000;
-  background-color: #a9aff1;
+  background-color: #cbcfff;
 }
 
 .move-up {
