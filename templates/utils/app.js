@@ -402,20 +402,20 @@ function start() {
   colorView.style.backgroundColor = '#7073ff';
 }),
 (drawAllButton.onmouseout = function () {
-  drawAllButton.style.backgroundColor = '#a9aff1';
+  drawAllButton.style.backgroundColor = '#cbcfff';
 }),
 (drawButton.onmouseout = function () {
   drawButton.style.backgroundColor = drawButtonIsFocus
     ? '#7aff81'
-    : '#a9aff1';
+    : '#cbcfff';
 }),
 (clearButton.onmouseout = function () {
   clearButton.style.backgroundColor = clearButtonIsFocus
     ? '#7aff81'
-    : '#a9aff1';
+    : '#cbcfff';
 }),
 (colorView.onmouseout = function () {
-  colorView.style.backgroundColor = colorViewIsFocus ? '#7aff81' : '#a9aff1';
+  colorView.style.backgroundColor = colorViewIsFocus ? '#7aff81' : '#cbcfff';
 }),
 (drawButton.onclick = function () {
   (drawAccept = !0),
@@ -423,17 +423,17 @@ function start() {
     (colorViewIsFocus = !1),
     (drawButtonIsFocus = !0) &&
       ((drawButton.style.backgroundColor = '#7aff81'),
-      (clearButton.style.backgroundColor = '#a9aff1'),
-      (colorView.style.backgroundColor = '#a9aff1'));
+      (clearButton.style.backgroundColor = '#cbcfff'),
+      (colorView.style.backgroundColor = '#cbcfff'));
 }),
 (clearButton.onclick = function () {
   (drawAccept = !1),
     (drawButtonIsFocus = !1),
     (colorViewIsFocus = !1),
     (clearButtonIsFocus = !0) &&
-      ((drawButton.style.backgroundColor = '#a9aff1'),
+      ((drawButton.style.backgroundColor = '#cbcfff'),
       (clearButton.style.backgroundColor = '#7aff81'),
-      (colorView.style.backgroundColor = '#a9aff1'));
+      (colorView.style.backgroundColor = '#cbcfff'));
 }),
 (colorView.onclick = function () {
   if (pipette) {
@@ -449,8 +449,8 @@ function start() {
   (drawButtonIsFocus = !1),
     (clearButtonIsFocus = !1),
     (colorViewIsFocus = !0) &&
-      ((drawButton.style.backgroundColor = '#a9aff1'),
-      (clearButton.style.backgroundColor = '#a9aff1'),
+      ((drawButton.style.backgroundColor = '#cbcfff'),
+      (clearButton.style.backgroundColor = '#cbcfff'),
       (colorView.style.backgroundColor = '#7aff81'));
 }),
 (drawAllButton.onclick = function () {
@@ -494,7 +494,7 @@ function start() {
 });
 
 switchTheme.addEventListener('change', () => {
-  let allElems = document.querySelectorAll('.tools1 *, .tools2 *');
+  let allElems = document.querySelectorAll('.tools1 *, .tools2 *, .menu-file *');
 
   if (switchTheme.checked) {
     document.body.classList.add('theme--dark');

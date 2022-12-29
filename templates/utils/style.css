@@ -174,7 +174,7 @@ main {
 
 .menu-file {
   position: fixed;
-  right: 100px;
+  left: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -280,7 +280,7 @@ main {
   margin-bottom: 5px;
   cursor: pointer;
   border: 2px solid #000;
-  background-color: #a9aff1;
+  background-color: #cbcfff;
 }
 
 .move-up {
