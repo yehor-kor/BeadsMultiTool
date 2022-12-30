@@ -188,7 +188,8 @@ function findNums(e) {
 function changeWidth() {
   let e = +document.querySelectorAll('.width')[0].value;
   rowUp = document.querySelectorAll('.up .row');
-
+  rowDown = document.querySelectorAll('.down .row');
+  
   if (e > widthNormal) {
     if (e <= 60) {
       for (let i = 0; i < e - widthNormal; i++) {
