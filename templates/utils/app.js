@@ -109,15 +109,20 @@ function loadJSON() {
         else if (-1 == r) {
           if (+t.match(/\d+/) == 1) {
             document.querySelectorAll('.amount')[0].checked = false;
-            document.querySelectorAll('.field')[1].style.display = 'none';
+            document.querySelectorAll('.field')[1].classList.add('invisible');
           }
           if (+t.match(/\d+/) == 2) {
             document.querySelectorAll('.amount')[0].checked = true;
-            document.querySelectorAll('.field')[1].style.display = 'flex';
+            document.querySelectorAll('.field')[1].classList.remove('invisible');
           }
         }
         else {
-          bicer[r].style.backgroundColor = t;
+          if (t == '#ffffff') {
+            bicer[r].style.backgroundColor = 'transparent';
+          }
+          else {
+            bicer[r].style.backgroundColor = t;
+          }
         }
         r++;
       }
@@ -137,7 +142,7 @@ function saveJSON() {
   bicer = document.getElementsByClassName('bicer');
   let e,
     t = [];
-  for (let o = -3; o < bicer.length; o++)
+  for (let o = -3; o < bicer.length; o++) {
     if (-3 == o) {
       let e = `v${titleVersion}`;
       t.push(e);
@@ -147,21 +152,28 @@ function saveJSON() {
     } else if (-1 == o) {
       let e = `mod${+amount.checked + 1}`;
       t.push(e);
-    } else
-      (e = rgbToHexNums(
-        findNums((e = window.getComputedStyle(bicer[o]).backgroundColor))
-      )),
-        t.push(e);
+    } else {
+      if (window.getComputedStyle(bicer[o]).backgroundColor == '#000000') {
+        e = '#ffffff';
+      }
+      else {
+        e = rgbToHexNums(
+          findNums(e = window.getComputedStyle(bicer[o]).backgroundColor)
+        );
+      }
+      t.push(e);
+    }
+  }
   let o = JSON.stringify(t),
     l = `beads_save_v${titleVersion}`,
     r = new File([o], l, { type: 'application/json' }),
     n = document.querySelectorAll('.linkForSavingFile')[0];
   (n.href = URL.createObjectURL(r)),
-    (n.download = l),
-    n.click(),
-    setTimeout(() => {
-      alert('All right! Your file has been saved ( ⌒‿⌒ )');
-    }, 250);
+  (n.download = l),
+  n.click(),
+  setTimeout(() => {
+    alert('All right! Your file has been saved ( ⌒‿⌒ )');
+  }, 250);
 }
 
 function savePDF() {
@@ -342,7 +354,7 @@ function start() {
   color = document.querySelectorAll('.color')[0].value;
   drawButton.style.backgroundColor = '#7aff81';
   
-  for (let e = 0; e < bicer.length; e++) {
+  for (let e = 0; e < bicer.length - indicator.length; e++) {
     (bicer[e].onmousedown = function (t) {
       if (drawAccept && 1 == t.which && !pipette) {
         (this.style.backgroundColor = color), (lineAccept = !0);
@@ -591,10 +603,10 @@ arrowUp.addEventListener('click', () => {
 }),
 amount.addEventListener('change', () => {
   if (amount.checked) {
-    document.querySelectorAll('.field')[1].style.display = 'flex';
+    document.querySelectorAll('.field')[1].classList.remove('invisible');
   }
   else if (!amount.checked) {
-    document.querySelectorAll('.field')[1].style.display = 'none';
+    document.querySelectorAll('.field')[1].classList.add('invisible');
   }
 }),
 window.addEventListener('scroll', () => {

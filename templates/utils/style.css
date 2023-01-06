@@ -148,7 +148,6 @@ body {
 
 .vertical {
   position: relative;
-  left: 25px;
   top: 200px;
   display: flex;
   flex-direction: column;
