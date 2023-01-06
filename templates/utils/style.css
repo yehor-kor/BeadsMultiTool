@@ -27,6 +27,7 @@ body {
   width: 100vw;
   height: 100vh;
   background-color: #a488f0;
+  cursor: progress;
   z-index: 1000;
 }
 
@@ -102,11 +103,12 @@ body {
   margin: 0;
 }
 
-main {
+.main {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  margin: 15px 0 15px 35px;
+  gap: 50px;
+  margin: 15px 0;
   user-select: none;
 }
 
@@ -130,6 +132,14 @@ main {
   margin: 0;
 }
 
+.bicer:hover {
+  background-color: #81e640;
+}
+
+.bicer--indicator {
+  cursor: not-allowed;
+}
+
 .up {
   display: flex;
   flex-direction: column;
@@ -149,10 +159,6 @@ main {
   border-bottom: 2px solid #fc0303;
 }
 
-.bicer:hover {
-  background-color: #81e640;
-}
-
 .tools1 {
   position: fixed;
   right: 20px;
@@ -163,8 +169,8 @@ main {
 
 .tools2 {
   position: fixed;
-  right: 20px;
-  bottom: 200px;
+  left: 20px;
+  top: 250px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -272,7 +278,8 @@ main {
 .clearButton,
 .colorView,
 .drawAllButton,
-.drawButton {
+.drawButton,
+.amountButton {
   width: 50px;
   height: 50px;
   padding: 3px;
@@ -281,6 +288,19 @@ main {
   cursor: pointer;
   border: 2px solid #000;
   background-color: #cbcfff;
+}
+
+.amountButton {
+  background-color:#f6e63c;
+
+}
+
+.amountButton:hover {
+  background-color: #7aff81;
+}
+
+.amount {
+  display: none;
 }
 
 .move-up {

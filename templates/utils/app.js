@@ -5,7 +5,7 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   title = document.getElementsByTagName('title')[0].textContent,
   titleVersion = +title.match(/\d+(?=[.])/),
   bicer = document.getElementsByClassName('bicer'),
-  indicator = document.getElementsByClassName('indicator'),
+  indicator = document.getElementsByClassName('bicer--indicator'),
   row = document.querySelectorAll('.row'),
   rowLast = document.querySelector('.row:last-child'),
   rowUp = document.querySelectorAll('.up .row'),
@@ -25,6 +25,7 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   width = document.querySelectorAll('.width')[0],
   length = document.querySelectorAll('.length')[0],
   step = document.querySelectorAll('.step')[0],
+  amount = document.querySelectorAll('.amount')[0],
   widthNormal = 7,
   lengthNormal = 1,
   stepNormal = 0,
@@ -35,6 +36,7 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   drawColor = '#ff0000',
   isFinished = !1,
   drawAccept = !0,
+  clearAccept = !1,
   lineAccept = !1,
   pipette = !1,
   colors = {},
@@ -45,7 +47,6 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   rowSpecial123,
   rowDiv,
   input,
-  input2,
   count;
 
 function prettyLog(e) {
@@ -83,9 +84,9 @@ function loadJSON() {
     (t.onload = () => {
       let o = t.result,
         l = JSON.parse(o),
-        r = -2;
+        r = -3;
       for (let t of l) {
-        if (-2 == r) {
+        if (-3 == r) {
           let o = +t.match(/\d+/);
           if (titleVersion != o)
             return (
@@ -101,11 +102,23 @@ function loadJSON() {
           for (let e = 0; e < bicer.length; e++)
             bicer[e].style.backgroundColor = 'transparent';
           console.log(`${e.name} - ${t}`), prettyLog(0);
-        } else
-          -1 == r
-            ? ((document.querySelectorAll('.width')[0].value = +t.match(/\d+/)),
-              changeWidth())
-            : (bicer[r].style.backgroundColor = t);
+        } else if (-2 == r) {
+          document.querySelectorAll('.width')[0].value = +t.match(/\d+/);
+          changeWidth();
+        }
+        else if (-1 == r) {
+          if (+t.match(/\d+/) == 1) {
+            document.querySelectorAll('.amount')[0].checked = false;
+            document.querySelectorAll('.field')[1].style.display = 'none';
+          }
+          if (+t.match(/\d+/) == 2) {
+            document.querySelectorAll('.amount')[0].checked = true;
+            document.querySelectorAll('.field')[1].style.display = 'flex';
+          }
+        }
+        else {
+          bicer[r].style.backgroundColor = t;
+        }
         r++;
       }
       setTimeout(() => {
@@ -124,12 +137,15 @@ function saveJSON() {
   bicer = document.getElementsByClassName('bicer');
   let e,
     t = [];
-  for (let o = -2; o < bicer.length; o++)
-    if (-2 == o) {
+  for (let o = -3; o < bicer.length; o++)
+    if (-3 == o) {
       let e = `v${titleVersion}`;
       t.push(e);
+    } else if (-2 == o) {
+      let e = `w${+width.value}`;
+      t.push(e);
     } else if (-1 == o) {
-      let e = `w${+document.querySelectorAll('.width')[0].value}`;
+      let e = `mod${+amount.checked + 1}`;
       t.push(e);
     } else
       (e = rgbToHexNums(
@@ -201,64 +217,73 @@ function changeWidth() {
         rowDiv = document.createElement('div');
         rowDiv.className = 'row';
         for (let j = 0; j < z + 8; j++) {
-          (input2 = document.createElement('span')),
-            (input2.className = 'bicer'),
-            rowDiv.append(input2);
+          (input = document.createElement('span')),
+            (input.className = 'bicer'),
+            rowDiv.append(input);
         }
-        (rowUpLast = document.querySelector('.up .row:last-child')).after(
+        rowUpLast = document.querySelectorAll('.up .row:last-child')[0].after(
           rowDiv
-        ),
-          'Earrings v2.0' == title
-            ? ((rowDiv = rowDiv.cloneNode(rowDiv)), rowUpLast.after(rowDiv))
-            : ('Earrings v3.0' != title &&
-                'Earrings v5.0' != title) ||
-              ((rowDiv = rowDiv.cloneNode(rowDiv)),
-              rowUpLast.after(rowDiv),
-              (rowDiv = rowDiv.cloneNode(rowDiv)),
-              rowUpLast.after(rowDiv)),
-          'Earrings v5.0' == title &&
-            (rowSpecial123 = document.querySelectorAll('.special123')),
-          z++;
+        );
+        rowDiv = rowDiv.cloneNode(rowDiv);
+        rowUpLast = document.querySelectorAll('.up .row:last-child')[1].after(
+          rowDiv
+        );
+        'Earrings v2.0' == title
+          ? (rowDiv = rowDiv.cloneNode(rowDiv),
+          rowUpLast = document.querySelectorAll('.up .row:last-child')[0].after(rowDiv),
+          rowDiv = rowDiv.cloneNode(rowDiv),
+          rowUpLast = document.querySelectorAll('.up .row:last-child')[1].after(rowDiv))
+          : ('Earrings v3.0' != title &&
+              'Earrings v5.0' != title) ||
+            (
+                rowDiv = rowDiv.cloneNode(rowDiv), 
+                rowUpLast = document.querySelectorAll('.up .row:last-child')[0].after(rowDiv),
+                rowDiv = rowDiv.cloneNode(rowDiv),
+                rowUpLast = document.querySelectorAll('.up .row:last-child')[1].after(rowDiv),
+                rowDiv = rowDiv.cloneNode(rowDiv),
+                rowUpLast = document.querySelectorAll('.up .row:last-child')[0].after(rowDiv),
+                rowDiv = rowDiv.cloneNode(rowDiv),
+                rowUpLast = document.querySelectorAll('.up .row:last-child')[1].after(rowDiv)
+            ),
+        'Earrings v5.0' == title &&
+          (rowSpecial123 = document.querySelectorAll('.special123')),
+        z++;
       }
       widthNormal = e;
-      start();
     }
   }
   else if (e < widthNormal) {
     if (e >= 2) {
       for (let i = 0; i < Math.abs(e - widthNormal); i++) {
         for (let j = 0; j < rowDown.length; j++) {
-          document
-            .querySelectorAll('.down .row .bicer:last-child')
-            [j].remove();
+          document.querySelectorAll('.down .row .bicer:last-child')[j].remove();
         }
-        (rowUpLast = document.querySelector('.up .row:last-child')).remove(),
-          'Earrings v2.0' == title
-            ? (rowUpLast = document.querySelector(
-                '.up .row:last-child'
-              )).remove()
-            : ('Earrings v3.0' != title &&
-                'Earrings v5.0' != title) ||
-              ((rowUpLast = document.querySelector(
-                '.up .row:last-child'
-              )).remove(),
-              (rowUpLast = document.querySelector(
-                '.up .row:last-child'
-              )).remove()),
-          'Earrings v5.0' == title &&
-            (rowSpecial123 = document.querySelectorAll('.special123')),
-          z--;
+        rowUpLast = document.querySelectorAll('.up .row:last-child')[0].remove();
+        rowUpLast = document.querySelectorAll('.up .row:last-child')[1].remove();
+        'Earrings v2.0' == title
+          ? (
+            rowUpLast = document.querySelectorAll('.up .row:last-child')[0].remove(),
+            rowUpLast = document.querySelectorAll('.up .row:last-child')[1].remove()
+          )
+          : ('Earrings v3.0' != title &&
+              'Earrings v5.0' != title) ||
+            (
+              rowUpLast = document.querySelectorAll('.up .row:last-child')[0].remove(),
+              rowUpLast = document.querySelectorAll('.up .row:last-child')[1].remove(),
+              rowUpLast = document.querySelectorAll('.up .row:last-child')[0].remove(),
+              rowUpLast = document.querySelectorAll('.up .row:last-child')[1].remove()
+            ),
+        'Earrings v5.0' == title &&
+          (rowSpecial123 = document.querySelectorAll('.special123')),
+        z--;
       }
       widthNormal = e;
-      start();
     }
   }
   if ('Earrings v5.0' == title && !isFinished) {
     for (let e = 0; e < 4; e++) {
       for (let e = 0; e < rowSpecial123.length; e++) {
-        document
-          .querySelectorAll('.row.special123 > .bicer:last-child')
-          [e].remove();
+        document.querySelectorAll('.row.special123 > .bicer:last-child')[e].remove();
       }
     }
     isFinished = !0;
@@ -272,29 +297,38 @@ function changeLength() {
   if (e > lengthNormal) {
     if (e <= 150) {
       for (let i = 0; i < e - lengthNormal; i++) {
-        let rowDiv = document.createElement('div');
+        rowDiv = document.createElement('div');
         rowDiv.className = 'row';
         for (let j = 0; j < widthNormal; j++) {
           input = document.createElement('span');
           input.className = 'bicer';
           rowDiv.append(input);
         }
-        document.querySelector('.down').insertAdjacentElement(
+        document.querySelectorAll('.down')[0].insertAdjacentElement(
+          "beforeend", 
+          rowDiv
+        );
+        rowDiv = rowDiv.cloneNode(rowDiv);
+        document.querySelectorAll('.down')[1].insertAdjacentElement(
           "beforeend", 
           rowDiv
         );
       }
       lengthNormal = e;
-      start();
     }
   }
   else if (e < lengthNormal) {
     if (e >= 0) {
       for (let i = 0; i < Math.abs(e - lengthNormal); i++) {
-        document.querySelector('.down .row:last-child').remove();
+        document.querySelectorAll('.down .row:last-child')[0].remove();
+        if (e >= 1) {
+          document.querySelectorAll('.down .row:last-child')[1].remove();
+        }
+        else {
+          document.querySelectorAll('.down .row:last-child')[0].remove();
+        }
       }
       lengthNormal = e;
-      start();
     }
   }
 }
@@ -306,6 +340,7 @@ function changeStep() {
 function start() {
   color0.value = drawColor;
   color = document.querySelectorAll('.color')[0].value;
+  drawButton.style.backgroundColor = '#7aff81';
   
   for (let e = 0; e < bicer.length; e++) {
     (bicer[e].onmousedown = function (t) {
@@ -313,7 +348,7 @@ function start() {
         (this.style.backgroundColor = color), (lineAccept = !0);
         for (let t = 0; t < bicer.length; t++) t == e && (colors[t] = color);
       }
-      if (drawAccept || 1 != t.which || pipette)
+      if (drawAccept || 1 != t.which || pipette) {
         if (pipette && '#81e640' != bicerHoverColor) {
           let t = findNums(
             (color = window.getComputedStyle(bicer[e]).backgroundColor)
@@ -324,6 +359,7 @@ function start() {
             ? ((color = 'transparent'), drawButton.click())
             : pipette && ((pipette = !1), drawButton.click());
         }
+      }
       else {
         (this.style.backgroundColor = 'transparent'), (lineAccept = !0);
         for (let t = 0; t < bicer.length; t++) t == e && delete colors[t];
@@ -332,47 +368,56 @@ function start() {
         'cell' != window.getComputedStyle(this).cursor ||
         (bicer[e].style.cursor = 'crosshair');
     }),
-      (bicer[e].onmouseover = function () {
-        let t = findNums(window.getComputedStyle(this).backgroundColor);
-        if (
-          ((bicerHoverColor = rgbToHexNums(t)),
-          lineAccept && drawAccept && !pipette)
-        ) {
-          this.style.backgroundColor = color;
-          for (let t = 0; t < bicer.length; t++) t == e && (colors[t] = color);
-        } else if (lineAccept && !pipette) {
-          this.style.backgroundColor = 'transparent';
-          for (let t = 0; t < bicer.length; t++) t == e && delete colors[t];
-        } else if (pipette && '#81e640' != bicerHoverColor) {
-          let e = findNums(
-            (color = window.getComputedStyle(this).backgroundColor)
-          );
-          color0.value = rgbToHexNums(e);
-        } else
-          pipette && '#81e640' == bicerHoverColor && (color0.value = 'transparent');
-      }),
-      (bicer[e].onmousemove = function () {
-        if (!pipette && 'cell' == window.getComputedStyle(this).cursor)
-          for (let e = 0; e < bicer.length; e++)
-            bicer[e].style.cursor = 'crosshair';
-      }),
-      (bicer[e].onmouseup = function () {
-        (lineAccept = !1),
-          (pipette = !1),
-          0 != Object.keys(colors).length && count != Object.keys(colors).length
-            ? (console.log('Total - ' + Object.keys(colors).length),
-              (count = Object.keys(colors).length))
-            : 0 == Object.keys(colors).length && console.log('Total - 0');
-      });
+    (bicer[e].onmouseover = function () {
+      let t = findNums(window.getComputedStyle(this).backgroundColor);
+      if (
+        bicerHoverColor = rgbToHexNums(t),
+        lineAccept && drawAccept && !pipette
+      ) {
+        this.style.backgroundColor = color;
+        for (let t = 0; t < bicer.length; t++) t == e && (colors[t] = color);
+      } else if (lineAccept && !pipette) {
+        this.style.backgroundColor = 'transparent';
+        for (let t = 0; t < bicer.length; t++) t == e && delete colors[t];
+      } else if (pipette && '#81e640' != bicerHoverColor) {
+        let e = findNums(
+          color = window.getComputedStyle(this).backgroundColor
+        );
+        color0.value = rgbToHexNums(e);
+      } else {
+        pipette && '#81e640' == bicerHoverColor && (color0.value = 'transparent');
+        if (!drawAccept || !clearAccept) {
+          this.style.backgroundColor = '#81e640';
+        }
+      }
+    }),
+    (bicer[e].onmouseout = function() {
+      if (!drawAccept || !lineAccept) { // || colors[e] != '#000000'
+        this.style.backgroundColor = 'transparent';
+      }
+    }),
+    (bicer[e].onmousemove = function () {
+      if (!pipette && 'cell' == window.getComputedStyle(this).cursor)
+        for (let e = 0; e < bicer.length; e++) {
+          bicer[e].style.cursor = 'crosshair';
+        }
+    }),
+    (bicer[e].onmouseup = function () {
+      (lineAccept = !1),
+      (pipette = !1),
+      0 != Object.keys(colors).length && count != Object.keys(colors).length
+        ? (console.log('Total - ' + Object.keys(colors).length),
+          (count = Object.keys(colors).length))
+        : 0 == Object.keys(colors).length && console.log('Total - 0');
+    });
   }
 }
 
 (window.onload = function () {
-  start(),
-  changeWidth(),
-  changeLength(),
-  changeStep(),
-  (drawButton.style.backgroundColor = '#7aff81');
+  changeWidth();
+  changeLength();
+  changeStep();
+  start();
 }),
 (document.body.onerror = function () {
   setTimeout(() => {
@@ -420,45 +465,56 @@ function start() {
 }),
 (drawButton.onclick = function () {
   (drawAccept = !0),
-    (clearButtonIsFocus = !1),
-    (colorViewIsFocus = !1),
-    (drawButtonIsFocus = !0) &&
-      ((drawButton.style.backgroundColor = '#7aff81'),
+  (clearAccept = !1),
+  (clearButtonIsFocus = !1),
+  (colorViewIsFocus = !1),
+  (drawButtonIsFocus = !0) &&
+    (
+      (drawButton.style.backgroundColor = '#7aff81'),
       (clearButton.style.backgroundColor = '#cbcfff'),
-      (colorView.style.backgroundColor = '#cbcfff'));
+      (colorView.style.backgroundColor = '#cbcfff')
+    );
 }),
 (clearButton.onclick = function () {
   (drawAccept = !1),
-    (drawButtonIsFocus = !1),
-    (colorViewIsFocus = !1),
-    (clearButtonIsFocus = !0) &&
-      ((drawButton.style.backgroundColor = '#cbcfff'),
+  (clearAccept = !0),
+  (drawButtonIsFocus = !1),
+  (colorViewIsFocus = !1),
+  (clearButtonIsFocus = !0) &&
+    (
+      (drawButton.style.backgroundColor = '#cbcfff'),
       (clearButton.style.backgroundColor = '#7aff81'),
-      (colorView.style.backgroundColor = '#cbcfff'));
+      (colorView.style.backgroundColor = '#cbcfff')
+    );
 }),
 (colorView.onclick = function () {
   if (pipette) {
-    if (pipette) {
-      for (let e = 0; e < bicer.length; e++)
-        bicer[e].style.cursor = 'crosshair';
-      pipette = !1;
+    for (let e = 0; e < bicer.length; e++) {
+      bicer[e].style.cursor = 'crosshair';
     }
+    pipette = !1;
   } else {
-    for (let e = 0; e < bicer.length; e++) bicer[e].style.cursor = 'cell';
+    for (let e = 0; e < bicer.length; e++) {
+      bicer[e].style.cursor = 'cell';
+    }
     pipette = !0;
   }
   (drawButtonIsFocus = !1),
-    (clearButtonIsFocus = !1),
-    (colorViewIsFocus = !0) &&
-      ((drawButton.style.backgroundColor = '#cbcfff'),
+  (clearButtonIsFocus = !1),
+  (colorViewIsFocus = !0) &&
+    (
+      (drawButton.style.backgroundColor = '#cbcfff'),
       (clearButton.style.backgroundColor = '#cbcfff'),
-      (colorView.style.backgroundColor = '#7aff81'));
+      (colorView.style.backgroundColor = '#7aff81')
+    );
 }),
 (drawAllButton.onclick = function () {
-  for (let e = 0; e < bicer.length; e++)
+  for (let e = 0; e < bicer.length; e++) {
     e >= bicer.length - indicator.length ||
       (bicer[e].style.backgroundColor = color);
-  (pipette = !1), drawButton.click();
+  }
+  pipette = !1;
+  drawButton.click();
 }),
 (color0.onclick = function () {
   drawButton.click();
@@ -513,6 +569,7 @@ switchTheme.addEventListener('change', () => {
   }
   else if (!switchTheme.checked) {
     document.body.classList.remove('theme--dark');
+    document.body.removeAttribute('class');
     for (let i = 0; i < allElems.length; i++) {
       if (allElems[i].classList == 'drawAllButton' 
         || 'colorView' 
@@ -531,6 +588,14 @@ arrowUp.addEventListener('click', () => {
     top: 0,
     behavior: 'smooth',
   });
+}),
+amount.addEventListener('change', () => {
+  if (amount.checked) {
+    document.querySelectorAll('.field')[1].style.display = 'flex';
+  }
+  else if (!amount.checked) {
+    document.querySelectorAll('.field')[1].style.display = 'none';
+  }
 }),
 window.addEventListener('scroll', () => {
   if (arrowUp.classList == 'move-up invisible'
