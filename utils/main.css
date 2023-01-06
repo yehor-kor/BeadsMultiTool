@@ -19,7 +19,7 @@ body {
   background-color: #fff;
 }
 
-header {
+.header {
   display: flex;
   position: fixed;
   align-items: center;
@@ -43,6 +43,7 @@ header {
   width: 100vw;
   height: 100vh;
   background-color: #a488f0;
+  cursor: progress;
   z-index: 1000;
 }
 
@@ -153,7 +154,7 @@ nav > .nav {
   width: 200px;
 }
 
-main {
+.main {
   width: 100%;
 }
 
@@ -239,7 +240,7 @@ main {
   border-left: 7px solid #0055ff;
 }
 
-footer {
+.footer {
   width: 100%;
   display: flex;
   align-items: center;
@@ -249,11 +250,11 @@ footer {
   user-select: none;
 }
 
-.footer {
+.footer-text {
   margin-right: 5%;
 }
 
-.footer > span {
+.footer-text > span {
   font-family: Muli, sans-serif;
   font-size: 24px;
   color: #fbff00;
@@ -409,7 +410,7 @@ footer {
     margin-bottom: 50px;
   }
 
-  .footer > span {
+  .footer-text > span {
     font-size: 1em;
   }
 }
