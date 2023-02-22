@@ -36,10 +36,12 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   drawColor = '#ff0000',
   isFinished = !1,
   drawAccept = !0,
-  clearAccept = !1,
   lineAccept = !1,
   pipette = !1,
+  alphabet = 'abcdefghijklmnopqrstuvwxyz',
   colors = {},
+  typesOfColor = {},
+  lettersOfColor = {},
   z = 0,
   rowSpecial1,
   rowSpecial2,
@@ -180,6 +182,49 @@ function savePDF() {
   print();
 }
 
+function countTypesOfColor() {
+  typesOfColor = {};
+  lettersOfColor = {};
+
+  for (const [k, v] of Object.entries(colors)) {
+    if (!typesOfColor[v]) {
+      typesOfColor[v] = 1;
+    } else {
+      typesOfColor[v] += 1;
+    }
+  }
+
+  let count = 0;
+
+  for (const [k, v] of Object.entries(typesOfColor)) {
+    let i = alphabet[count].toUpperCase();
+
+    if (!lettersOfColor[i]) {
+      lettersOfColor[i] = typesOfColor[k];
+    }
+
+    count++;
+  }
+
+  // document.write(typesOfColor);
+  //
+  //
+  //
+}
+
+function fillIndicator() {
+  let i = 0;
+
+  for (let key in typesOfColor) {
+    indicator[i].style.backgroundColor = key;
+    i++;
+  }
+
+  if (i >= Object.keys(typesOfColor).length) {
+    indicator[i].style.backgroundColor = 'transparent';
+  }
+}
+
 function rgbToHexNums(e) {
   let t = String(e.replace(/\d+/, '')),
     o = String(t.replace(/\d+/, '')),
@@ -317,12 +362,12 @@ function changeLength() {
           rowDiv.append(input);
         }
         document.querySelectorAll('.down')[0].insertAdjacentElement(
-          "beforeend", 
+          'beforeend', 
           rowDiv
         );
         rowDiv = rowDiv.cloneNode(rowDiv);
         document.querySelectorAll('.down')[1].insertAdjacentElement(
-          "beforeend", 
+          'beforeend', 
           rowDiv
         );
       }
@@ -356,11 +401,11 @@ function start() {
   
   for (let e = 0; e < bicer.length - indicator.length; e++) {
     (bicer[e].onmousedown = function (t) {
-      if (drawAccept && 1 == t.which && !pipette) {
+      if (drawAccept && 0 === t.button && !pipette) {
         (this.style.backgroundColor = color), (lineAccept = !0);
         for (let t = 0; t < bicer.length; t++) t == e && (colors[t] = color);
       }
-      if (drawAccept || 1 != t.which || pipette) {
+      if (drawAccept || 0 !== t.button || pipette) {
         if (pipette && '#81e640' != bicerHoverColor) {
           let t = findNums(
             (color = window.getComputedStyle(bicer[e]).backgroundColor)
@@ -398,15 +443,11 @@ function start() {
         color0.value = rgbToHexNums(e);
       } else {
         pipette && '#81e640' == bicerHoverColor && (color0.value = 'transparent');
-        if (!drawAccept || !clearAccept) {
-          this.style.backgroundColor = '#81e640';
-        }
+        this.style.backgroundColor = '#81e640';
       }
     }),
-    (bicer[e].onmouseout = function() {
-      if (!drawAccept || !lineAccept) { // || colors[e] != '#000000'
-        this.style.backgroundColor = 'transparent';
-      }
+    (bicer[e].onmouseout = function() { 
+      this.style.backgroundColor = (colors[e] !== color) && (!typesOfColor[colors[e]]) ? 'transparent' : (colors[e] === color) ? color : colors[e];
     }),
     (bicer[e].onmousemove = function () {
       if (!pipette && 'cell' == window.getComputedStyle(this).cursor)
@@ -421,6 +462,9 @@ function start() {
         ? (console.log('Total - ' + Object.keys(colors).length),
           (count = Object.keys(colors).length))
         : 0 == Object.keys(colors).length && console.log('Total - 0');
+      
+      countTypesOfColor();
+      fillIndicator();
     });
   }
 }
@@ -437,7 +481,7 @@ function start() {
   }, 250);
 }),
 (document.body.onmousemove = function (e) {
-  0 == e.which && (lineAccept = !1);
+  0 === e.which && (lineAccept = !1);
 }),
 (width.onchange = changeWidth),
 (length.onchange = changeLength),
@@ -477,7 +521,6 @@ function start() {
 }),
 (drawButton.onclick = function () {
   (drawAccept = !0),
-  (clearAccept = !1),
   (clearButtonIsFocus = !1),
   (colorViewIsFocus = !1),
   (drawButtonIsFocus = !0) &&
@@ -489,7 +532,6 @@ function start() {
 }),
 (clearButton.onclick = function () {
   (drawAccept = !1),
-  (clearAccept = !0),
   (drawButtonIsFocus = !1),
   (colorViewIsFocus = !1),
   (clearButtonIsFocus = !0) &&
@@ -524,6 +566,9 @@ function start() {
   for (let e = 0; e < bicer.length; e++) {
     e >= bicer.length - indicator.length ||
       (bicer[e].style.backgroundColor = color);
+    colors[e] = color;
+    countTypesOfColor();
+    fillIndicator();
   }
   pipette = !1;
   drawButton.click();
