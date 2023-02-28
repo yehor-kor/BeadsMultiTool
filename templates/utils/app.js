@@ -238,8 +238,8 @@ function fillIndicator() {
 
 function doPattern(action = 'do') {
   if (action === 'do') {
-    for (let i = 0; i < bicer.length; i++) {
-      bicer[i].textContent = "A";
+    for (let i = 0; i < bicer.length - indicator.length; i++) {
+      bicer[i].textContent = 'A';
     }
     
     for (let i = 0; i < bicer.length; i++) {
@@ -248,8 +248,8 @@ function doPattern(action = 'do') {
       for (const [k, v] of Object.entries(lettersOfColor)) {
         if (tmp === v) {
           bicer[i].textContent = k;
-        } else if (tmp === '#000000') {
-          bicer[i].textContent = "A";
+        } else if (tmp === '#000000' && i < bicer.length - indicator.length) {
+          bicer[i].textContent = 'A';
         }
       }
     }
@@ -515,7 +515,7 @@ function start() {
       fillIndicator();
 
       if (pattern.checked) {
-        for (let i = 0; i < bicer.length; i++) {
+        for (let i = 0; i < bicer.length - indicator.length; i++) {
           bicer[i].textContent = 'A';
         }
 
@@ -525,7 +525,7 @@ function start() {
           for (const [k, v] of Object.entries(lettersOfColor)) {
             if (tmp === v) {
               bicer[i].textContent = k;
-            } else if (tmp === '#000000') {
+            } else if (tmp === '#000000' && i < bicer.length - indicator.length) {
               bicer[i].textContent = 'A';
             }
           }
@@ -635,6 +635,16 @@ function start() {
     colors[e] = color;
     countTypesOfColor();
     fillIndicator();
+    
+    if (pattern.checked) {
+      for (let i = 0; i < bicer.length; i++) {
+        if (i < bicer.length - indicator.length + 1) {
+          bicer[i].textContent = 'B';
+        } else {
+          bicer[i].textContent = '';
+        }
+      }
+    }
   }
   pipette = !1;
   drawButton.click();
