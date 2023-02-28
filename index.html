@@ -158,6 +158,13 @@
         <span>&copy; 2022 Beads Multi Tool - All rights reserved</span>
       </div>
     </footer>
+    
+    <script>
+      const rightsText = document.querySelector('.footer-text > span');
+      const yearNow = new Date().getFullYear();
+
+      rightsText.textContent = `© ${yearNow} Beads Multi Tool - All rights reserved`;
+    </script>
 
     <script defer src="./utils/preloader.js"></script>
     <script defer src="./utils/scroll.js"></script>
