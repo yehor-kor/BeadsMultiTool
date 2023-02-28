@@ -9,10 +9,10 @@
 }
 
 body {
+  margin: 0;
+  padding: 0;
   width: 100%;
   height: 100%;
-  padding: 0;
-  margin: 0;
   overflow-y: scroll;
 }
 
@@ -33,15 +33,15 @@ body {
 
 .dual-ring {
   display: inline-block;
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
 }
 
 .dual-ring:after {
   content: " ";
   display: block;
-  width: 170px;
-  height: 170px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   border: 15px solid #fff;
   border-color: #9dff00 transparent #9dff00 transparent;
@@ -59,11 +59,29 @@ body {
   font-size: 16px;
   font-family: cursive;
   text-align: center;
+  width: 100%;
   height: 70px;
   padding: 10px 20px;
   user-select: none;
   background: linear-gradient(to right, #6f34dd, #60dbe4);
   color: #fbff00;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.logo > img {
+  width: 50px;
+  height: 50px;
+}
+
+.title-doc {
+  position: absolute;
+  left: 90px
 }
 
 .header > h1 {
@@ -75,21 +93,6 @@ body {
   justify-content: flex-start;
   align-items: center;
   gap: 50px;
-}
-
-.header__nav > a {
-  text-decoration: none;
-  text-shadow: #000 2px 2px;
-  cursor: pointer;
-  color: #fff;
-}
-
-.header__nav > a:hover {
-  text-decoration: underline;
-}
-
-.header__nav > h2 {
-  margin: 0;
 }
 
 .theme {
@@ -123,13 +126,16 @@ body {
 }
 
 .bicer {
-  border: 1px solid #615b5b;
+  margin: 0;
+  padding: 0;
   width: 25px;
   height: 17px;
+  border: 1px solid #615b5b;
+  text-align: center;
+  font-size: 13px;
+  line-height: 15px;
   cursor: crosshair;
   background-color: transparent;
-  padding: 0;
-  margin: 0;
 }
 
 .bicer:hover {
@@ -152,6 +158,35 @@ body {
   display: flex;
   flex-direction: column;
   flex-direction: column-reverse;
+}
+
+.counts {
+  position: relative;
+  top: 200px;
+  left: -40px;
+  display: flex;
+  flex-direction: column;
+  flex-direction: column-reverse;
+}
+
+.description {
+  position: relative;
+  top: 200px;
+  left: -80px;
+  display: flex;
+  flex-direction: column;
+  flex-direction: column-reverse;
+}
+
+.count {
+  visibility: hidden;
+  height: 17px;
+}
+
+.digits {
+  visibility: hidden;
+  width: 70px;
+  height: 17px;
 }
 
 .start {
@@ -191,8 +226,8 @@ body {
   margin-bottom: 10px;
   padding: 2px;
   cursor: pointer;
-  width: 54px;
-  height: 108px;
+  width: 60px;
+  height: 120px;
   background-color: #fff;
 }
 
@@ -278,9 +313,10 @@ body {
 .colorView,
 .drawAllButton,
 .drawButton,
-.amountButton {
-  width: 50px;
-  height: 50px;
+.amountButton,
+.patternButton {
+  width: 60px;
+  height: 60px;
   padding: 3px;
   border-radius: 5px;
   margin-bottom: 5px;
@@ -289,16 +325,18 @@ body {
   background-color: #cbcfff;
 }
 
-.amountButton {
+.amountButton,
+.patternButton {
   background-color:#f6e63c;
-
 }
 
-.amountButton:hover {
+.amountButton:hover,
+.patternButton:hover {
   background-color: #7aff81;
 }
 
-.amount {
+.amount,
+.pattern {
   display: none;
 }
 
@@ -310,12 +348,12 @@ body {
   height: 50px;
   border-radius: 50%;
   cursor: pointer;
-  animation: live 1s linear;
+  animation: live 0.2s linear;
   z-index: 100;
 }
 
 .move-up:hover {
-  animation: increase 1s ease-in-out infinite alternate;
+  animation: increase 0.2s ease-in-out infinite alternate;
 }
 
 .move-up > img {
@@ -330,7 +368,7 @@ body {
 }
 
 .animated {
-  animation: lost 1s linear;
+  animation: lost 0.2s linear;
   opacity: 0;
   z-index: -1;
 }

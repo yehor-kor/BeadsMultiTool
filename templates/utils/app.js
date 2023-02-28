@@ -5,7 +5,10 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   title = document.getElementsByTagName('title')[0].textContent,
   titleVersion = +title.match(/\d+(?=[.])/),
   bicer = document.getElementsByClassName('bicer'),
-  indicator = document.getElementsByClassName('bicer--indicator'),
+  indicator = document.querySelectorAll('.bicer--indicator'),
+  indicatorCount = document.querySelectorAll('.count'),
+  digitsColor = document.querySelectorAll('.digits'),
+  description = document.querySelectorAll('.description')[0],
   row = document.querySelectorAll('.row'),
   rowLast = document.querySelector('.row:last-child'),
   rowUp = document.querySelectorAll('.up .row'),
@@ -26,6 +29,7 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   length = document.querySelectorAll('.length')[0],
   step = document.querySelectorAll('.step')[0],
   amount = document.querySelectorAll('.amount')[0],
+  pattern = document.querySelectorAll('.pattern')[0],
   widthNormal = 7,
   lengthNormal = 1,
   stepNormal = 0,
@@ -197,19 +201,26 @@ function countTypesOfColor() {
   let count = 0;
 
   for (const [k, v] of Object.entries(typesOfColor)) {
-    let i = alphabet[count].toUpperCase();
+    let i = alphabet[count + 1].toUpperCase();
 
     if (!lettersOfColor[i]) {
-      lettersOfColor[i] = typesOfColor[k];
+      lettersOfColor[i] = k;
+      indicatorCount[count].textContent = `x${v}`;
+      indicatorCount[count].style.visibility = 'visible';
+      digitsColor[count].style.visibility = 'visible';
     }
-
+    
     count++;
   }
 
-  // document.write(typesOfColor);
-  //
-  //
-  //
+  for (let i = 0; i < indicator.length; i++) {
+    if (indicatorCount[i].textContent == 'x1') {
+      indicatorCount[i].textContent = '';
+      indicatorCount[i].style.visibility = 'hidden';
+      digitsColor[i].value = '';
+      digitsColor[i].style.visibility = 'hidden';
+    }
+  }
 }
 
 function fillIndicator() {
@@ -222,6 +233,34 @@ function fillIndicator() {
 
   if (i >= Object.keys(typesOfColor).length) {
     indicator[i].style.backgroundColor = 'transparent';
+  }
+}
+
+function doPattern(action = 'do') {
+  if (action === 'do') {
+    for (let i = 0; i < bicer.length; i++) {
+      bicer[i].textContent = "A";
+    }
+    
+    for (let i = 0; i < bicer.length; i++) {
+      let tmp = rgbToHexNums(findNums(bicer[i].style.backgroundColor));
+
+      for (const [k, v] of Object.entries(lettersOfColor)) {
+        if (tmp === v) {
+          bicer[i].textContent = k;
+        } else if (tmp === '#000000') {
+          bicer[i].textContent = "A";
+        }
+      }
+    }
+
+    description.style.display = 'flex';
+  } else if (action === 'undo') {
+    for (let i = 0; i < bicer.length; i++) {
+      bicer[i].textContent = '';
+    }
+
+    description.style.display = 'none';
   }
 }
 
@@ -402,7 +441,12 @@ function start() {
   for (let e = 0; e < bicer.length - indicator.length; e++) {
     (bicer[e].onmousedown = function (t) {
       if (drawAccept && 0 === t.button && !pipette) {
-        (this.style.backgroundColor = color), (lineAccept = !0);
+        if (color[0] !== '#') {
+          color = rgbToHexNums(findNums(color));
+        }
+
+        this.style.backgroundColor = color;
+        lineAccept = !0;
         for (let t = 0; t < bicer.length; t++) t == e && (colors[t] = color);
       }
       if (drawAccept || 0 !== t.button || pipette) {
@@ -450,10 +494,14 @@ function start() {
       this.style.backgroundColor = (colors[e] !== color) && (!typesOfColor[colors[e]]) ? 'transparent' : (colors[e] === color) ? color : colors[e];
     }),
     (bicer[e].onmousemove = function () {
-      if (!pipette && 'cell' == window.getComputedStyle(this).cursor)
-        for (let e = 0; e < bicer.length; e++) {
+      if (!pipette && 'cell' == window.getComputedStyle(this).cursor) {
+        for (let e = 0; e < bicer.length - indicator.length; e++) {
           bicer[e].style.cursor = 'crosshair';
         }
+      }
+
+      countTypesOfColor();
+      fillIndicator();
     }),
     (bicer[e].onmouseup = function () {
       (lineAccept = !1),
@@ -461,10 +509,28 @@ function start() {
       0 != Object.keys(colors).length && count != Object.keys(colors).length
         ? (console.log('Total - ' + Object.keys(colors).length),
           (count = Object.keys(colors).length))
-        : 0 == Object.keys(colors).length && console.log('Total - 0');
+          : 0 == Object.keys(colors).length && console.log('Total - 0');
       
       countTypesOfColor();
       fillIndicator();
+
+      if (pattern.checked) {
+        for (let i = 0; i < bicer.length; i++) {
+          bicer[i].textContent = 'A';
+        }
+
+        for (let i = 0; i < bicer.length; i++) {
+          let tmp = rgbToHexNums(findNums(bicer[i].style.backgroundColor));
+
+          for (const [k, v] of Object.entries(lettersOfColor)) {
+            if (tmp === v) {
+              bicer[i].textContent = k;
+            } else if (tmp === '#000000') {
+              bicer[i].textContent = 'A';
+            }
+          }
+        }
+      }
     });
   }
 }
@@ -543,12 +609,12 @@ function start() {
 }),
 (colorView.onclick = function () {
   if (pipette) {
-    for (let e = 0; e < bicer.length; e++) {
+    for (let e = 0; e < bicer.length - indicator.length; e++) {
       bicer[e].style.cursor = 'crosshair';
     }
     pipette = !1;
   } else {
-    for (let e = 0; e < bicer.length; e++) {
+    for (let e = 0; e < bicer.length - indicator.length; e++) {
       bicer[e].style.cursor = 'cell';
     }
     pipette = !0;
@@ -649,9 +715,15 @@ arrowUp.addEventListener('click', () => {
 amount.addEventListener('change', () => {
   if (amount.checked) {
     document.querySelectorAll('.field')[1].classList.remove('invisible');
-  }
-  else if (!amount.checked) {
+  } else if (!amount.checked) {
     document.querySelectorAll('.field')[1].classList.add('invisible');
+  }
+}),
+pattern.addEventListener('change', () => {
+  if (pattern.checked) {
+    doPattern();
+  } else if (!pattern.checked) {
+    doPattern('undo');
   }
 }),
 window.addEventListener('scroll', () => {
