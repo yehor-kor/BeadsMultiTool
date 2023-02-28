@@ -268,12 +268,12 @@ nav > .nav {
   height: 50px;
   border-radius: 50%;
   cursor: pointer;
-  animation: live 1s linear;
+  animation: live 0.2s linear;
   z-index: 100;
 }
 
 .move-up:hover {
-  animation: increase 1s ease-in-out infinite alternate;
+  animation: increase 0.2s ease-in-out infinite alternate;
 }
 
 .invisible {
@@ -285,7 +285,7 @@ nav > .nav {
 }
 
 .animated {
-  animation: lost 1s linear;
+  animation: lost 0.2s linear;
   opacity: 0;
   z-index: -1;
 }
