@@ -46,6 +46,7 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   colors = {},
   typesOfColor = {},
   lettersOfColor = {},
+  dictationColors = [],
   z = 0,
   rowSpecial1,
   rowSpecial2,
@@ -123,12 +124,13 @@ function loadJSON() {
           }
         }
         else {
-          if (t == '#ffffff') {
+          if (t == '#000000') {
             bicer[r].style.backgroundColor = 'transparent';
-          }
-          else {
+          } else {
             bicer[r].style.backgroundColor = t;
           }
+
+          colors[r] = t;
         }
         r++;
       }
@@ -401,12 +403,12 @@ function changeLength() {
           rowDiv.append(input);
         }
         document.querySelectorAll('.down')[0].insertAdjacentElement(
-          'beforeend', 
+          'afterbegin', 
           rowDiv
         );
         rowDiv = rowDiv.cloneNode(rowDiv);
         document.querySelectorAll('.down')[1].insertAdjacentElement(
-          'beforeend', 
+          'afterbegin', 
           rowDiv
         );
       }
@@ -416,12 +418,12 @@ function changeLength() {
   else if (e < lengthNormal) {
     if (e >= 0) {
       for (let i = 0; i < Math.abs(e - lengthNormal); i++) {
-        document.querySelectorAll('.down .row:last-child')[0].remove();
+        document.querySelectorAll('.down .row:first-child')[0].remove();
         if (e >= 1) {
-          document.querySelectorAll('.down .row:last-child')[1].remove();
+          document.querySelectorAll('.down .row:first-child')[1].remove();
         }
         else {
-          document.querySelectorAll('.down .row:last-child')[0].remove();
+          document.querySelectorAll('.down .row:first-child')[0].remove();
         }
       }
       lengthNormal = e;
@@ -430,7 +432,111 @@ function changeLength() {
 }
 
 function changeStep() {
-  // in the next updates
+  let e = +document.querySelectorAll('.step')[0].value;
+  let f = +document.querySelectorAll('.width')[0].value;
+  rowDown = document.querySelectorAll('.down .row');
+
+  if (e == 1) {
+    for (let i = 0; i < f; i++) {
+      for (let j = f / 2 - 1; j > i; j--) {
+        document.querySelectorAll(`.field:nth-child(1) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
+        document.querySelectorAll(`.field:nth-child(2) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
+        document.querySelectorAll(`.field:nth-child(1) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
+        document.querySelectorAll(`.field:nth-child(2) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
+      }
+    }
+  } else if (e > 1) {
+    for (let i = 0; i < f; i++) {
+      for (let j = f / 2 - 1; j > i; j--) {
+        document.querySelectorAll(`.field:nth-child(1) .down .row:nth-last-child(${i + 2}) .bicer:last-child`)[0].remove();
+        document.querySelectorAll(`.field:nth-child(2) .down .row:nth-last-child(${i + 2}) .bicer:last-child`)[0].remove();
+        document.querySelectorAll(`.field:nth-child(1) .down .row:nth-last-child(${i + 2}) .bicer:last-child`)[0].remove();
+        document.querySelectorAll(`.field:nth-child(2) .down .row:nth-last-child(${i + 2}) .bicer:last-child`)[0].remove();
+      }
+    }
+  }
+}
+
+function toRead() {
+  let bicerDown = document.querySelectorAll('.field:nth-child(1) .down .bicer');
+  let f = +document.querySelectorAll('.width')[0].value;
+  let g = +document.querySelectorAll('.length')[0].value;
+  let countRows = 0;
+  let countColumns = 0;
+
+  dictationColors = [];
+
+  for (let i = 0; i < bicerDown.length + f - 1; i += f) {
+    if (countRows >= g) {
+      countColumns++;
+      i = countColumns;
+      countRows = 0;
+    }
+
+    let t = findNums(bicerDown[i].style.backgroundColor);
+    let r = rgbToHexNums(t);
+
+    if (r === '#000000') {
+      dictationColors.push('A');
+    }
+
+    for (let j = 0; j < alphabet.length; j++) {
+      if (lettersOfColor[alphabet[j].toUpperCase()] === r) {
+        dictationColors.push(alphabet[j].toUpperCase());
+      }
+    }
+    
+    countRows++;
+  }
+  // write in file
+  toTextFile();
+}
+
+function toTextFile() {
+  let g = +document.querySelectorAll('.length')[0].value;
+  let prevResult = '';
+  let result = '';
+  let countTheSame = 1;
+  let countRows = 1;
+  let isFirst = true;
+  
+  for (let i = 1; i < dictationColors.length; i++) {
+
+    if (dictationColors[i - 1] === dictationColors[i]) {
+      countTheSame++;
+    } else {
+      if (isFirst) {
+        prevResult += `${countTheSame - countRows + 1}${dictationColors[i - 1]} `;
+        isFirst = false;
+      } else {
+        prevResult += `${countTheSame}${dictationColors[i - 1]} `;
+      }
+      countTheSame = 1;
+    }
+    
+    if (i % (g - 1) === 0) {
+      result += `Row ${countRows} - `;
+
+      if (!isFirst) {
+        result += `${prevResult}${countTheSame + countRows - 1}${dictationColors[i - 1]}\n`;
+      } else {
+        result += `${prevResult}${countTheSame}${dictationColors[i - 1]}\n`;
+      }
+
+      prevResult = '';
+      isFirst = true;
+      countTheSame = 1;
+      countRows++;
+    }
+  }
+
+  let o = result,
+    l = `beads_read_v${titleVersion}`,
+    r = new File([o], l, { type: 'text/plain' }),
+    n = document.querySelectorAll('.linkForSavingFile')[0];
+  n.href = URL.createObjectURL(r);
+  n.download = l;
+  n.click();
 }
 
 function start() {
@@ -513,6 +619,7 @@ function start() {
       
       countTypesOfColor();
       fillIndicator();
+      toRead();
 
       if (pattern.checked) {
         for (let i = 0; i < bicer.length - indicator.length; i++) {

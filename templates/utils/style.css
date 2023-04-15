@@ -37,7 +37,7 @@ body {
   height: 150px;
 }
 
-.dual-ring:after {
+.dual-ring::after {
   content: " ";
   display: block;
   width: 120px;
@@ -146,7 +146,8 @@ body {
   cursor: not-allowed;
 }
 
-.up {
+.up,
+.down {
   display: flex;
   flex-direction: column;
   align-items: center;
