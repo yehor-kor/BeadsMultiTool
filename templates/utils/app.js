@@ -18,6 +18,7 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   fileSaveButton = document.querySelectorAll('.fileSave')[0],
   fileSaveJSONButton = document.querySelectorAll('.fileSaveJSON')[0],
   fileSavePDFButton = document.querySelectorAll('.fileSavePDF')[0],
+  fileSaveTXTButton = document.querySelectorAll('.fileSaveTXT')[0],
   fileLoadButton = document.querySelectorAll('.fileLoad')[0],
   fileLoadButtonHide = document.querySelectorAll('.fileLoadHide')[0],
   htmlPage = document.getElementsByTagName('html')[0],
@@ -30,6 +31,7 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   step = document.querySelectorAll('.step')[0],
   amount = document.querySelectorAll('.amount')[0],
   pattern = document.querySelectorAll('.pattern')[0],
+  digitsView = document.querySelectorAll('.digitsView')[0],
   widthNormal = 7,
   lengthNormal = 1,
   stepNormal = 0,
@@ -266,6 +268,48 @@ function doPattern(action = 'do') {
   }
 }
 
+function doDigits(action = 'do') {
+  if (action === 'do') {
+    let f = +document.querySelectorAll('.width')[0].value;
+    let g = +document.querySelectorAll('.length')[0].value;
+    let bicerDown = document.querySelectorAll('.field:nth-child(1) .down .bicer');
+    let countTheSame = 1;
+    let countColumns = 1;
+    let isNewColumn = true;
+
+    toRead('notxt');
+    
+    for (let i = 1; i < dictationColors.length; i++) {
+      if (dictationColors[i - 1] !== dictationColors[i]) {
+        if (isNewColumn) {
+          countTheSame -= countColumns - 1;
+          isNewColumn = false;
+        }
+
+        bicerDown[(i % g - 1) * f + countColumns - 1].textContent = `${countTheSame}`;
+        countTheSame = 1;
+      } else {
+        countTheSame++;
+      }
+
+      if (i % (g - 1) === 0) {
+        if (countTheSame !== g) {
+          countTheSame += countColumns - 1;
+        }
+        
+        bicerDown[(g - 1) * f + countColumns - 1].textContent = `${countTheSame}`;
+        countColumns++;
+        countTheSame = 1;
+        isNewColumn = true;
+      }
+    }
+  } else if (action === 'undo') {
+    for (let i = 0; i < bicer.length; i++) {
+      bicer[i].textContent = '';
+    }
+  }
+}
+
 function rgbToHexNums(e) {
   let t = String(e.replace(/\d+/, '')),
     o = String(t.replace(/\d+/, '')),
@@ -457,7 +501,7 @@ function changeStep() {
   }
 }
 
-function toRead() {
+function toRead(action = 'txt') {
   let bicerDown = document.querySelectorAll('.field:nth-child(1) .down .bicer');
   let f = +document.querySelectorAll('.width')[0].value;
   let g = +document.querySelectorAll('.length')[0].value;
@@ -488,8 +532,11 @@ function toRead() {
     
     countRows++;
   }
+  
   // write in file
-  toTextFile();
+  if (action === 'txt') {
+    toTextFile();
+  }
 }
 
 function toTextFile() {
@@ -505,11 +552,13 @@ function toTextFile() {
     if (dictationColors[i - 1] === dictationColors[i]) {
       countTheSame++;
     } else {
-      if (isFirst) {
+      if (isFirst && countTheSame - countRows + 1 > 0) {
         prevResult += `${countTheSame - countRows + 1}${dictationColors[i - 1]} `;
         isFirst = false;
-      } else {
+      } else if (!isFirst) {
         prevResult += `${countTheSame}${dictationColors[i - 1]} `;
+      } else {
+        isFirst = false;
       }
       countTheSame = 1;
     }
@@ -619,24 +668,13 @@ function start() {
       
       countTypesOfColor();
       fillIndicator();
-      toRead();
 
       if (pattern.checked) {
-        for (let i = 0; i < bicer.length - indicator.length; i++) {
-          bicer[i].textContent = 'A';
-        }
+        doPattern();
+      }
 
-        for (let i = 0; i < bicer.length; i++) {
-          let tmp = rgbToHexNums(findNums(bicer[i].style.backgroundColor));
-
-          for (const [k, v] of Object.entries(lettersOfColor)) {
-            if (tmp === v) {
-              bicer[i].textContent = k;
-            } else if (tmp === '#000000' && i < bicer.length - indicator.length) {
-              bicer[i].textContent = 'A';
-            }
-          }
-        }
+      if (digitsView.checked) {
+        doDigits();
       }
     });
   }
@@ -752,6 +790,40 @@ function start() {
         }
       }
     }
+
+    if (digitsView.checked) {
+      let f = +document.querySelectorAll('.width')[0].value;
+      let g = +document.querySelectorAll('.length')[0].value;
+      let bicerDown = document.querySelectorAll('.field:nth-child(1) .down .bicer');
+      let countTheSame = 1;
+      let countColumns = 1;
+      let isNewColumn = true;
+      
+      for (let i = 1; i < dictationColors.length; i++) {
+        if (dictationColors[i - 1] !== dictationColors[i]) {
+          if (isNewColumn) {
+            countTheSame -= countColumns - 1;
+            isNewColumn = false;
+          }
+
+          bicerDown[(i % g - 1) * f + countColumns - 1].textContent = `${countTheSame}`;
+          countTheSame = 1;
+        } else {
+          countTheSame++;
+        }
+
+        if (i % (g - 1) === 0) {
+          if (countTheSame !== g) {
+            countTheSame += countColumns - 1;
+          }
+          
+          bicerDown[(g - 1) * f + countColumns - 1].textContent = `${countTheSame}`;
+          countColumns++;
+          countTheSame = 1;
+          isNewColumn = true;
+        }
+      }
+    }
   }
   pipette = !1;
   drawButton.click();
@@ -760,22 +832,33 @@ function start() {
   drawButton.click();
 }),
 (fileSaveButton.onclick = function () {
-  'none' == fileSaveJSONButton.style.display &&
-  'none' == fileSavePDFButton.style.display
+  'none' === fileSaveJSONButton.style.display &&
+  'none' === fileSavePDFButton.style.display &&
+  'none' === fileSaveTXTButton.style.display
     ? ((fileSaveJSONButton.style.display = 'block'),
-      (fileSavePDFButton.style.display = 'block'))
+      (fileSavePDFButton.style.display = 'block'),
+      (fileSaveTXTButton.style.display = 'block'))
     : ((fileSaveJSONButton.style.display = 'none'),
-      (fileSavePDFButton.style.display = 'none'));
+      (fileSavePDFButton.style.display = 'none'),
+      (fileSaveTXTButton.style.display = 'none'));
 }),
 (fileSaveJSONButton.onmousedown = function () {
   (fileSaveJSONButton.style.display = 'none'),
     (fileSavePDFButton.style.display = 'none'),
+    (fileSaveTXTButton.style.display = 'none'),
     setTimeout(saveJSON, 100);
 }),
 (fileSavePDFButton.onmousedown = function () {
   (fileSaveJSONButton.style.display = 'none'),
     (fileSavePDFButton.style.display = 'none'),
+    (fileSaveTXTButton.style.display = 'none'),
     setTimeout(savePDF, 100);
+  }),
+(fileSaveTXTButton.onmousedown = function () {
+  (fileSaveJSONButton.style.display = 'none'),
+    (fileSavePDFButton.style.display = 'none'),
+    (fileSaveTXTButton.style.display = 'none'),
+    setTimeout(toRead, 100);
 }),
 (fileLoadButtonHide.onchange = function () {
   loadJSON();
@@ -841,6 +924,13 @@ pattern.addEventListener('change', () => {
     doPattern();
   } else if (!pattern.checked) {
     doPattern('undo');
+  }
+}),
+digitsView.addEventListener('change', () => {
+  if (digitsView.checked) {
+    doDigits();
+  } else if (!digitsView.checked) {
+    doDigits('undo');
   }
 }),
 window.addEventListener('scroll', () => {

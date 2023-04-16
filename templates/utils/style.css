@@ -221,6 +221,10 @@ body {
   align-items: center;
 }
 
+.file--save {
+  left: 140px;
+}
+
 .color {
   border: 2px solid #000;
   border-radius: 5px;
@@ -252,7 +256,8 @@ body {
 }
 
 .fileSaveJSON,
-.fileSavePDF {
+.fileSavePDF,
+.fileSaveTXT {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -276,12 +281,22 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-top: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 0;
+}
+
+.fileSaveTXT {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 0;
 }
 
 .fileLoad:hover,
 .fileSave:hover,
 .fileSaveJSON:hover,
-.fileSavePDF:hover {
+.fileSavePDF:hover,
+.fileSaveTXT:hover {
   background-color: #fbff00;
 }
 
@@ -315,7 +330,8 @@ body {
 .drawAllButton,
 .drawButton,
 .amountButton,
-.patternButton {
+.patternButton,
+.digitsViewButton {
   width: 60px;
   height: 60px;
   padding: 3px;
@@ -327,17 +343,20 @@ body {
 }
 
 .amountButton,
-.patternButton {
+.patternButton,
+.digitsViewButton {
   background-color:#f6e63c;
 }
 
 .amountButton:hover,
-.patternButton:hover {
+.patternButton:hover,
+.digitsViewButton:hover {
   background-color: #7aff81;
 }
 
 .amount,
-.pattern {
+.pattern,
+.digitsView {
   display: none;
 }
 
