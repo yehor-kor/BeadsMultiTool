@@ -32,6 +32,9 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   amount = document.querySelectorAll('.amount')[0],
   pattern = document.querySelectorAll('.pattern')[0],
   digitsView = document.querySelectorAll('.digitsView')[0],
+  amountButton = document.querySelectorAll('.amountButton')[0],
+  patternButton = document.querySelectorAll('.patternButton')[0],
+  digitsViewButton = document.querySelectorAll('.digitsViewButton')[0],
   widthNormal = 7,
   lengthNormal = 1,
   stepNormal = 0,
@@ -44,11 +47,14 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   drawAccept = !0,
   lineAccept = !1,
   pipette = !1,
+  isBeginning = !0,
+  isLastBeginning = !0,
   alphabet = 'abcdefghijklmnopqrstuvwxyz',
   colors = {},
   typesOfColor = {},
   lettersOfColor = {},
-  dictationColors = [],
+  dictationColors1 = [],
+  dictationColors2 = [],
   z = 0,
   rowSpecial1,
   rowSpecial2,
@@ -272,21 +278,26 @@ function doDigits(action = 'do') {
   if (action === 'do') {
     let f = +document.querySelectorAll('.width')[0].value;
     let g = +document.querySelectorAll('.length')[0].value;
-    let bicerDown = document.querySelectorAll('.field:nth-child(1) .down .bicer');
+    let bicerDown1 = document.querySelectorAll('.field:nth-child(1) .down .bicer');
+    let bicerDown2 = document.querySelectorAll('.field:nth-child(2) .down .bicer');
     let countTheSame = 1;
-    let countColumns = 1;
-    let isNewColumn = true;
-
-    toRead('notxt');
+    let countRows = 1;
+    let isNewRow = true;
     
-    for (let i = 1; i < dictationColors.length; i++) {
-      if (dictationColors[i - 1] !== dictationColors[i]) {
-        if (isNewColumn) {
-          countTheSame -= countColumns - 1;
-          isNewColumn = false;
+    toRead('notxt');
+
+    for (let i = 0; i < bicer.length; i++) {
+      bicer[i].textContent = '';
+    }
+    
+    for (let i = 1; i < dictationColors1.length; i++) {
+      if (dictationColors1[i - 1] !== dictationColors1[i]) {
+        if (isNewRow) {
+          countTheSame -= countRows - 1;
+          isNewRow = false;
         }
 
-        bicerDown[(i % g - 1) * f + countColumns - 1].textContent = `${countTheSame}`;
+        bicerDown1[(i % g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
         countTheSame = 1;
       } else {
         countTheSame++;
@@ -294,13 +305,42 @@ function doDigits(action = 'do') {
 
       if (i % (g - 1) === 0) {
         if (countTheSame !== g) {
-          countTheSame += countColumns - 1;
+          countTheSame += countRows - 1;
         }
         
-        bicerDown[(g - 1) * f + countColumns - 1].textContent = `${countTheSame}`;
-        countColumns++;
+        bicerDown1[(g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
+        countRows++;
         countTheSame = 1;
-        isNewColumn = true;
+        isNewRow = true;
+      }
+    }
+
+    countTheSame = 1;
+    countRows = 1;
+    isNewRow = true;
+
+    for (let i = 1; i < dictationColors2.length; i++) {
+      if (dictationColors2[i - 1] !== dictationColors2[i]) {
+        if (isNewRow) {
+          countTheSame -= countRows - 1;
+          isNewRow = false;
+        }
+
+        bicerDown2[(i % g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
+        countTheSame = 1;
+      } else {
+        countTheSame++;
+      }
+
+      if (i % (g - 1) === 0) {
+        if (countTheSame !== g) {
+          countTheSame += countRows - 1;
+        }
+        
+        bicerDown2[(g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
+        countRows++;
+        countTheSame = 1;
+        isNewRow = true;
       }
     }
   } else if (action === 'undo') {
@@ -391,6 +431,21 @@ function changeWidth() {
           (rowSpecial123 = document.querySelectorAll('.special123')),
         z++;
       }
+
+      if ('Earrings v4.0' == title) {
+        if (!isBeginning) {
+          rowUpLast = document.querySelectorAll('.up .row:nth-last-child(2)')[0].remove();
+          rowUpLast = document.querySelectorAll('.up .row:nth-last-child(2)')[1].remove();
+        } else {
+          isBeginning = false;
+        }
+
+        rowDiv = rowDiv.cloneNode(rowDiv);
+        rowUpLast = document.querySelectorAll('.up .row:last-child')[0].after(rowDiv);
+        rowDiv = rowDiv.cloneNode(rowDiv);
+        rowUpLast = document.querySelectorAll('.up .row:last-child')[1].after(rowDiv);
+      }
+
       widthNormal = e;
     }
   }
@@ -419,6 +474,24 @@ function changeWidth() {
           (rowSpecial123 = document.querySelectorAll('.special123')),
         z--;
       }
+
+      if ('Earrings v4.0' == title) {
+        rowUpLast = document.querySelectorAll('.up .row:last-child')[0].remove();
+        rowUpLast = document.querySelectorAll('.up .row:last-child')[1].remove();
+
+        rowDiv = rowDiv.cloneNode(rowDiv);
+        rowUpLast = document.querySelectorAll('.up .row:last-child')[0].after(rowDiv);
+        rowDiv = rowDiv.cloneNode(rowDiv);
+        rowUpLast = document.querySelectorAll('.up .row:last-child')[1].after(rowDiv);
+
+        if (!isLastBeginning) {
+          document.querySelectorAll('.up .row .bicer:last-child')[e * 2 + 1].remove();
+          document.querySelectorAll('.up .row .bicer:last-child')[e].remove();
+        } else {
+          isLastBeginning = false;
+        }
+      }
+
       widthNormal = e;
     }
   }
@@ -502,31 +575,59 @@ function changeStep() {
 }
 
 function toRead(action = 'txt') {
-  let bicerDown = document.querySelectorAll('.field:nth-child(1) .down .bicer');
+  let bicerDown1 = document.querySelectorAll('.field:nth-child(1) .down .bicer');
+  let bicerDown2 = document.querySelectorAll('.field:nth-child(2) .down .bicer');
   let f = +document.querySelectorAll('.width')[0].value;
   let g = +document.querySelectorAll('.length')[0].value;
   let countRows = 0;
   let countColumns = 0;
 
-  dictationColors = [];
+  dictationColors1 = [];
+  dictationColors2 = [];
 
-  for (let i = 0; i < bicerDown.length + f - 1; i += f) {
+  for (let i = 0; i < bicerDown1.length + f - 1; i += f) {
     if (countRows >= g) {
       countColumns++;
       i = countColumns;
       countRows = 0;
     }
 
-    let t = findNums(bicerDown[i].style.backgroundColor);
+    let t = findNums(bicerDown1[i].style.backgroundColor);
     let r = rgbToHexNums(t);
 
     if (r === '#000000') {
-      dictationColors.push('A');
+      dictationColors1.push('A');
     }
 
     for (let j = 0; j < alphabet.length; j++) {
       if (lettersOfColor[alphabet[j].toUpperCase()] === r) {
-        dictationColors.push(alphabet[j].toUpperCase());
+        dictationColors1.push(alphabet[j].toUpperCase());
+      }
+    }
+    
+    countRows++;
+  }
+
+  countRows = 0;
+  countColumns = 0;
+
+  for (let i = 0; i < bicerDown2.length + f - 1; i += f) {
+    if (countRows >= g) {
+      countColumns++;
+      i = countColumns;
+      countRows = 0;
+    }
+
+    let t = findNums(bicerDown2[i].style.backgroundColor);
+    let r = rgbToHexNums(t);
+
+    if (r === '#000000') {
+      dictationColors2.push('A');
+    }
+
+    for (let j = 0; j < alphabet.length; j++) {
+      if (lettersOfColor[alphabet[j].toUpperCase()] === r) {
+        dictationColors2.push(alphabet[j].toUpperCase());
       }
     }
     
@@ -547,16 +648,16 @@ function toTextFile() {
   let countRows = 1;
   let isFirst = true;
   
-  for (let i = 1; i < dictationColors.length; i++) {
+  for (let i = 1; i < dictationColors1.length; i++) {
 
-    if (dictationColors[i - 1] === dictationColors[i]) {
+    if (dictationColors1[i - 1] === dictationColors1[i]) {
       countTheSame++;
     } else {
       if (isFirst && countTheSame - countRows + 1 > 0) {
-        prevResult += `${countTheSame - countRows + 1}${dictationColors[i - 1]} `;
+        prevResult += `${countTheSame - countRows + 1}${dictationColors1[i - 1]} `;
         isFirst = false;
       } else if (!isFirst) {
-        prevResult += `${countTheSame}${dictationColors[i - 1]} `;
+        prevResult += `${countTheSame}${dictationColors1[i - 1]} `;
       } else {
         isFirst = false;
       }
@@ -567,9 +668,9 @@ function toTextFile() {
       result += `Row ${countRows} - `;
 
       if (!isFirst) {
-        result += `${prevResult}${countTheSame + countRows - 1}${dictationColors[i - 1]}\n`;
+        result += `${prevResult}${countTheSame + countRows - 1}${dictationColors1[i - 1]}  \n`;
       } else {
-        result += `${prevResult}${countTheSame}${dictationColors[i - 1]}\n`;
+        result += `${prevResult}${countTheSame}${dictationColors1[i - 1]}  \n`;
       }
 
       prevResult = '';
@@ -799,8 +900,8 @@ function start() {
       let countColumns = 1;
       let isNewColumn = true;
       
-      for (let i = 1; i < dictationColors.length; i++) {
-        if (dictationColors[i - 1] !== dictationColors[i]) {
+      for (let i = 1; i < dictationColors1.length; i++) {
+        if (dictationColors1[i - 1] !== dictationColors1[i]) {
           if (isNewColumn) {
             countTheSame -= countColumns - 1;
             isNewColumn = false;
@@ -921,6 +1022,8 @@ amount.addEventListener('change', () => {
 }),
 pattern.addEventListener('change', () => {
   if (pattern.checked) {
+    patternButton.style.backgroundColor = '#36fff2';
+    digitsView.checked = false;
     doPattern();
   } else if (!pattern.checked) {
     doPattern('undo');
@@ -928,11 +1031,33 @@ pattern.addEventListener('change', () => {
 }),
 digitsView.addEventListener('change', () => {
   if (digitsView.checked) {
+    digitsViewButton.style.backgroundColor = '#36fff2';
+    pattern.checked = false;
     doDigits();
   } else if (!digitsView.checked) {
     doDigits('undo');
   }
 }),
+patternButton.onmouseover = function () {
+  patternButton.style.backgroundColor = '#7aff81';
+},
+patternButton.onmouseout = function () {
+  if (pattern.checked) {
+    patternButton.style.backgroundColor = '#36fff2';
+  } else if (!pattern.checked) {
+    patternButton.style.backgroundColor = '#f6e63c';
+  }
+},
+digitsViewButton.onmouseover = function () {
+  digitsViewButton.style.backgroundColor = '#7aff81';
+},
+digitsViewButton.onmouseout = function () {
+  if (digitsView.checked) {
+    digitsViewButton.style.backgroundColor = '#36fff2';
+  } else if (!digitsView.checked) {
+    digitsViewButton.style.backgroundColor = '#f6e63c';
+  }
+},
 window.addEventListener('scroll', () => {
   if (arrowUp.classList == 'move-up invisible'
     && 100 <= document.documentElement.scrollTop) {
