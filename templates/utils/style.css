@@ -191,7 +191,8 @@ body {
 }
 
 .start {
-  border-bottom: 2px solid #fc0303;
+  width: calc(100% + 50px);
+  border-bottom: 3px solid #fc0303;
 }
 
 .tools1 {
