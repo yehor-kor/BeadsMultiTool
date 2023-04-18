@@ -72,7 +72,8 @@ function prettyLog(e) {
 
 function loadJSON() {
   let e = fileLoadButtonHide.files[0];
-  if (null == e) return;
+
+  if (e === null) return;
   if ('application/json' != e.type) {
     if ('' != e.type) {
       prettyLog(180), console.warn(e.type), console.warn(e.name), prettyLog(0);
@@ -99,9 +100,9 @@ function loadJSON() {
     (t.onload = () => {
       let o = t.result,
         l = JSON.parse(o),
-        r = -3;
+        r = -5;
       for (let t of l) {
-        if (-3 == r) {
+        if (-5 == r) {
           let o = +t.match(/\d+/);
           if (titleVersion != o)
             return (
@@ -117,11 +118,16 @@ function loadJSON() {
           for (let e = 0; e < bicer.length; e++)
             bicer[e].style.backgroundColor = 'transparent';
           console.log(`${e.name} - ${t}`), prettyLog(0);
-        } else if (-2 == r) {
+        } else if (-4 == r) {
           document.querySelectorAll('.width')[0].value = +t.match(/\d+/);
           changeWidth();
-        }
-        else if (-1 == r) {
+        } else if (-3 == r) {
+          document.querySelectorAll('.length')[0].value = +t.match(/\d+/);
+          changeLength();
+        } else if (-2 == r) {
+          document.querySelectorAll('.step')[0].value = +t.match(/\d+/);
+          changeStep();
+        } else if (-1 == r) {
           if (+t.match(/\d+/) == 1) {
             document.querySelectorAll('.amount')[0].checked = false;
             document.querySelectorAll('.field')[1].classList.add('invisible');
@@ -130,8 +136,7 @@ function loadJSON() {
             document.querySelectorAll('.amount')[0].checked = true;
             document.querySelectorAll('.field')[1].classList.remove('invisible');
           }
-        }
-        else {
+        } else {
           if (t == '#000000') {
             bicer[r].style.backgroundColor = 'transparent';
           } else {
@@ -155,45 +160,72 @@ function loadJSON() {
 }
 
 function saveJSON() {
-  bicer = document.getElementsByClassName('bicer');
-  let e,
-    t = [];
-  for (let o = -3; o < bicer.length; o++) {
-    if (-3 == o) {
-      let e = `v${titleVersion}`;
-      t.push(e);
-    } else if (-2 == o) {
-      let e = `w${+width.value}`;
-      t.push(e);
-    } else if (-1 == o) {
-      let e = `mod${+amount.checked + 1}`;
-      t.push(e);
-    } else {
-      if (window.getComputedStyle(bicer[o]).backgroundColor == '#000000') {
-        e = '#ffffff';
+  let saveFileName = prompt('Please, name your save', `beads_save_v${titleVersion}`);
+
+  if (saveFileName === null || saveFileName.trim() === '') {
+    return;
+  } else {
+    let e;
+    let t = [];
+
+    width = document.querySelectorAll('.width')[0];
+    length = document.querySelectorAll('.length')[0];
+    step = document.querySelectorAll('.step')[0];
+    bicer = document.getElementsByClassName('bicer');
+
+    for (let o = -5; o < bicer.length; o++) {
+      if (-5 == o) {
+        let e = `v${titleVersion}`;
+        t.push(e);
+      } else if (-4 == o) {
+        let e = `w${+width.value}`;
+        t.push(e);
+      } else if (-3 == o) {
+        let e = `l${+length.value}`;
+        t.push(e);
+      } else if (-2 == o) {
+        let e = `s${+step.value}`;
+        t.push(e);
+      } else if (-1 == o) {
+        let e = `mod${+amount.checked + 1}`;
+        t.push(e);
+      } else {
+        if (window.getComputedStyle(bicer[o]).backgroundColor == '#000000') {
+          e = '#ffffff';
+        }
+        else {
+          e = rgbToHexNums(
+            findNums(e = window.getComputedStyle(bicer[o]).backgroundColor)
+          );
+        }
+        t.push(e);
       }
-      else {
-        e = rgbToHexNums(
-          findNums(e = window.getComputedStyle(bicer[o]).backgroundColor)
-        );
-      }
-      t.push(e);
     }
+    let o = JSON.stringify(t),
+      l = saveFileName.trim(),
+      r = new File([o], l, { type: 'application/json' }),
+      n = document.querySelectorAll('.linkForSavingFile')[0];
+    (n.href = URL.createObjectURL(r)),
+    (n.download = l),
+    n.click(),
+    setTimeout(() => {
+      alert('All right! Your file has been saved ( ⌒‿⌒ )');
+    }, 250);
   }
-  let o = JSON.stringify(t),
-    l = `beads_save_v${titleVersion}`,
-    r = new File([o], l, { type: 'application/json' }),
-    n = document.querySelectorAll('.linkForSavingFile')[0];
-  (n.href = URL.createObjectURL(r)),
-  (n.download = l),
-  n.click(),
-  setTimeout(() => {
-    alert('All right! Your file has been saved ( ⌒‿⌒ )');
-  }, 250);
 }
 
 function savePDF() {
+  let blocks = ['header', 'tools1', 'tools2', 'menu-file', 'move-up'];
+
+  blocks.forEach(e => {
+    document.querySelector(`.${e}`).classList.add('invisible');
+  });
+
   print();
+
+  blocks.forEach(e => {
+    document.querySelector(`.${e}`).classList.remove('invisible');
+  });
 }
 
 function countTypesOfColor() {
@@ -1023,6 +1055,7 @@ amount.addEventListener('change', () => {
 pattern.addEventListener('change', () => {
   if (pattern.checked) {
     patternButton.style.backgroundColor = '#36fff2';
+    digitsViewButton.style.backgroundColor = "#f6e63c";
     digitsView.checked = false;
     doPattern();
   } else if (!pattern.checked) {
@@ -1032,6 +1065,7 @@ pattern.addEventListener('change', () => {
 digitsView.addEventListener('change', () => {
   if (digitsView.checked) {
     digitsViewButton.style.backgroundColor = '#36fff2';
+    patternButton.style.backgroundColor = '#f6e63c';
     pattern.checked = false;
     doDigits();
   } else if (!digitsView.checked) {
