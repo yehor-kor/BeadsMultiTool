@@ -42,7 +42,7 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   clearButtonIsFocus = !1,
   colorViewIsFocus = !1,
   bicerHoverColor = '#81e640',
-  drawColor = '#ff0000',
+  drawColor = '#00c8ff',
   isFinished = !1,
   drawAccept = !0,
   lineAccept = !1,
@@ -232,6 +232,10 @@ function countTypesOfColor() {
   typesOfColor = {};
   lettersOfColor = {};
 
+  for (let i = 0; i < indicator.length - 1; i++) {
+    indicatorCount[i].textContent = '';
+  }
+
   for (const [k, v] of Object.entries(colors)) {
     if (!typesOfColor[v]) {
       typesOfColor[v] = 1;
@@ -243,7 +247,7 @@ function countTypesOfColor() {
   let count = 0;
 
   for (const [k, v] of Object.entries(typesOfColor)) {
-    let i = alphabet[count + 1].toUpperCase();
+    let i = alphabet[count].toUpperCase();
 
     if (!lettersOfColor[i]) {
       lettersOfColor[i] = k;
@@ -256,7 +260,7 @@ function countTypesOfColor() {
   }
 
   for (let i = 0; i < indicator.length; i++) {
-    if (indicatorCount[i].textContent == 'x1') {
+    if (indicatorCount[i].textContent === 'x0') {
       indicatorCount[i].textContent = '';
       indicatorCount[i].style.visibility = 'hidden';
       digitsColor[i].value = '';
@@ -281,7 +285,7 @@ function fillIndicator() {
 function doPattern(action = 'do') {
   if (action === 'do') {
     for (let i = 0; i < bicer.length - indicator.length; i++) {
-      bicer[i].textContent = 'A';
+      bicer[i].textContent = 'Z';
     }
     
     for (let i = 0; i < bicer.length; i++) {
@@ -291,7 +295,7 @@ function doPattern(action = 'do') {
         if (tmp === v) {
           bicer[i].textContent = k;
         } else if (tmp === '#000000' && i < bicer.length - indicator.length) {
-          bicer[i].textContent = 'A';
+          bicer[i].textContent = 'Z';
         }
       }
     }
@@ -323,13 +327,21 @@ function doDigits(action = 'do') {
     }
     
     for (let i = 1; i < dictationColors1.length; i++) {
+      let pos = (i % g - 1) * f + countRows - 1;
+
       if (dictationColors1[i - 1] !== dictationColors1[i]) {
         if (isNewRow) {
           countTheSame -= countRows - 1;
           isNewRow = false;
         }
+        if (i % g === 0) {
+          pos += f;
+        }
+        if (countTheSame === 0) {
+          countTheSame = '';
+        }
 
-        bicerDown1[(i % g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
+        bicerDown1[pos].textContent = `${countTheSame}`;
         countTheSame = 1;
       } else {
         countTheSame++;
@@ -352,13 +364,21 @@ function doDigits(action = 'do') {
     isNewRow = true;
 
     for (let i = 1; i < dictationColors2.length; i++) {
+      let pos = (i % g - 1) * f + countRows - 1;
+
       if (dictationColors2[i - 1] !== dictationColors2[i]) {
         if (isNewRow) {
           countTheSame -= countRows - 1;
           isNewRow = false;
         }
+        if (i % g === 0) {
+          pos += f;
+        }
+        if (countTheSame === 0) {
+          countTheSame = '';
+        }
 
-        bicerDown2[(i % g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
+        bicerDown2[pos].textContent = `${countTheSame}`;
         countTheSame = 1;
       } else {
         countTheSame++;
@@ -535,6 +555,8 @@ function changeWidth() {
     }
     isFinished = !0;
   }
+
+  start();
 }
 
 function changeLength() {
@@ -578,6 +600,8 @@ function changeLength() {
       lengthNormal = e;
     }
   }
+
+  start();
 }
 
 function changeStep() {
@@ -628,7 +652,7 @@ function toRead(action = 'txt') {
     let r = rgbToHexNums(t);
 
     if (r === '#000000') {
-      dictationColors1.push('A');
+      dictationColors1.push('Z');
     }
 
     for (let j = 0; j < alphabet.length; j++) {
@@ -654,7 +678,7 @@ function toRead(action = 'txt') {
     let r = rgbToHexNums(t);
 
     if (r === '#000000') {
-      dictationColors2.push('A');
+      dictationColors2.push('Z');
     }
 
     for (let j = 0; j < alphabet.length; j++) {
@@ -917,7 +941,7 @@ function start() {
     if (pattern.checked) {
       for (let i = 0; i < bicer.length; i++) {
         if (i < bicer.length - indicator.length + 1) {
-          bicer[i].textContent = 'B';
+          bicer[i].textContent = 'A';
         } else {
           bicer[i].textContent = '';
         }
@@ -929,17 +953,17 @@ function start() {
       let g = +document.querySelectorAll('.length')[0].value;
       let bicerDown = document.querySelectorAll('.field:nth-child(1) .down .bicer');
       let countTheSame = 1;
-      let countColumns = 1;
-      let isNewColumn = true;
+      let countRows = 1;
+      let isNewRow = true;
       
       for (let i = 1; i < dictationColors1.length; i++) {
         if (dictationColors1[i - 1] !== dictationColors1[i]) {
-          if (isNewColumn) {
-            countTheSame -= countColumns - 1;
-            isNewColumn = false;
+          if (isNewRow) {
+            countTheSame -= countRows - 1;
+            isNewRow = false;
           }
 
-          bicerDown[(i % g - 1) * f + countColumns - 1].textContent = `${countTheSame}`;
+          bicerDown[(i % g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
           countTheSame = 1;
         } else {
           countTheSame++;
@@ -947,13 +971,13 @@ function start() {
 
         if (i % (g - 1) === 0) {
           if (countTheSame !== g) {
-            countTheSame += countColumns - 1;
+            countTheSame += countRows - 1;
           }
           
-          bicerDown[(g - 1) * f + countColumns - 1].textContent = `${countTheSame}`;
-          countColumns++;
+          bicerDown[(g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
+          countRows++;
           countTheSame = 1;
-          isNewColumn = true;
+          isNewRow = true;
         }
       }
     }
@@ -1055,7 +1079,7 @@ amount.addEventListener('change', () => {
 pattern.addEventListener('change', () => {
   if (pattern.checked) {
     patternButton.style.backgroundColor = '#36fff2';
-    digitsViewButton.style.backgroundColor = "#f6e63c";
+    digitsViewButton.style.backgroundColor = '#f6e63c';
     digitsView.checked = false;
     doPattern();
   } else if (!pattern.checked) {
