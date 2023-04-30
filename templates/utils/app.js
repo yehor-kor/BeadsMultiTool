@@ -318,7 +318,7 @@ function doDigits(action = 'do') {
     let bicerDown2 = document.querySelectorAll('.field:nth-child(2) .down .bicer');
     let countTheSame = 1;
     let countRows = 1;
-    let isNewRow = true;
+    let countColumns = 1;
     
     toRead('notxt');
 
@@ -327,74 +327,50 @@ function doDigits(action = 'do') {
     }
     
     for (let i = 1; i < dictationColors1.length; i++) {
-      let pos = (i % g - 1) * f + countRows - 1;
+      let pos = (countColumns - 1) * f + (countRows - 1);
 
-      if (dictationColors1[i - 1] !== dictationColors1[i]) {
-        if (isNewRow) {
-          countTheSame -= countRows - 1;
-          isNewRow = false;
-        }
-        if (i % g === 0) {
-          pos += f;
-        }
-        if (countTheSame === 0) {
-          countTheSame = '';
-        }
-
+      if (dictationColors1[i - 1] !== dictationColors1[i] || countColumns === g) {
         bicerDown1[pos].textContent = `${countTheSame}`;
         countTheSame = 1;
+        countColumns++;
       } else {
         countTheSame++;
+        countColumns++;
       }
 
-      if (i % (g - 1) === 0) {
-        if (countTheSame !== g) {
-          countTheSame += countRows - 1;
-        }
-        
-        bicerDown1[(g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
+      if (countColumns - 1 === g) {
         countRows++;
         countTheSame = 1;
-        isNewRow = true;
+        countColumns = 1;
       }
     }
+
+    bicerDown1[g * f - 1].textContent = `${countTheSame}`;
 
     countTheSame = 1;
     countRows = 1;
-    isNewRow = true;
+    countColumns = 1;
 
     for (let i = 1; i < dictationColors2.length; i++) {
-      let pos = (i % g - 1) * f + countRows - 1;
+      let pos = (countColumns - 1) * f + (countRows - 1);
 
-      if (dictationColors2[i - 1] !== dictationColors2[i]) {
-        if (isNewRow) {
-          countTheSame -= countRows - 1;
-          isNewRow = false;
-        }
-        if (i % g === 0) {
-          pos += f;
-        }
-        if (countTheSame === 0) {
-          countTheSame = '';
-        }
-
+      if (dictationColors2[i - 1] !== dictationColors2[i] || countColumns === g) {
         bicerDown2[pos].textContent = `${countTheSame}`;
         countTheSame = 1;
+        countColumns++;
       } else {
         countTheSame++;
+        countColumns++;
       }
 
-      if (i % (g - 1) === 0) {
-        if (countTheSame !== g) {
-          countTheSame += countRows - 1;
-        }
-        
-        bicerDown2[(g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
+      if (countColumns - 1 === g) {
         countRows++;
         countTheSame = 1;
-        isNewRow = true;
+        countColumns = 1;
       }
     }
+
+    bicerDown2[g * f - 1].textContent = `${countTheSame}`;
   } else if (action === 'undo') {
     for (let i = 0; i < bicer.length; i++) {
       bicer[i].textContent = '';
@@ -935,53 +911,24 @@ function start() {
     e >= bicer.length - indicator.length ||
       (bicer[e].style.backgroundColor = color);
     colors[e] = color;
-    countTypesOfColor();
-    fillIndicator();
-    
-    if (pattern.checked) {
-      for (let i = 0; i < bicer.length; i++) {
-        if (i < bicer.length - indicator.length + 1) {
-          bicer[i].textContent = 'A';
-        } else {
-          bicer[i].textContent = '';
-        }
-      }
-    }
+  }
 
-    if (digitsView.checked) {
-      let f = +document.querySelectorAll('.width')[0].value;
-      let g = +document.querySelectorAll('.length')[0].value;
-      let bicerDown = document.querySelectorAll('.field:nth-child(1) .down .bicer');
-      let countTheSame = 1;
-      let countRows = 1;
-      let isNewRow = true;
-      
-      for (let i = 1; i < dictationColors1.length; i++) {
-        if (dictationColors1[i - 1] !== dictationColors1[i]) {
-          if (isNewRow) {
-            countTheSame -= countRows - 1;
-            isNewRow = false;
-          }
+  countTypesOfColor();
+  fillIndicator();
 
-          bicerDown[(i % g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
-          countTheSame = 1;
-        } else {
-          countTheSame++;
-        }
-
-        if (i % (g - 1) === 0) {
-          if (countTheSame !== g) {
-            countTheSame += countRows - 1;
-          }
-          
-          bicerDown[(g - 1) * f + countRows - 1].textContent = `${countTheSame}`;
-          countRows++;
-          countTheSame = 1;
-          isNewRow = true;
-        }
+  if (pattern.checked) {
+    for (let i = 0; i < bicer.length; i++) {
+      if (i < bicer.length - indicator.length + 1) {
+        bicer[i].textContent = 'A';
+      } else {
+        bicer[i].textContent = '';
       }
     }
   }
+  if (digitsView.checked) {
+    doDigits();
+  }
+
   pipette = !1;
   drawButton.click();
 }),
@@ -1081,6 +1028,7 @@ pattern.addEventListener('change', () => {
     patternButton.style.backgroundColor = '#36fff2';
     digitsViewButton.style.backgroundColor = '#f6e63c';
     digitsView.checked = false;
+    description.style.display = 'flex';
     doPattern();
   } else if (!pattern.checked) {
     doPattern('undo');
@@ -1091,6 +1039,7 @@ digitsView.addEventListener('change', () => {
     digitsViewButton.style.backgroundColor = '#36fff2';
     patternButton.style.backgroundColor = '#f6e63c';
     pattern.checked = false;
+    description.style.display = 'none';
     doDigits();
   } else if (!digitsView.checked) {
     doDigits('undo');
