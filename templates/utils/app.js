@@ -233,6 +233,7 @@ function countTypesOfColor() {
   lettersOfColor = {};
 
   for (let i = 0; i < indicator.length - 1; i++) {
+    indicator[i].style.backgroundColor = 'transparent';
     indicatorCount[i].textContent = '';
   }
 
@@ -301,6 +302,8 @@ function doPattern(action = 'do') {
     }
 
     description.style.display = 'flex';
+
+    checkContrast();
   } else if (action === 'undo') {
     for (let i = 0; i < bicer.length; i++) {
       bicer[i].textContent = '';
@@ -371,10 +374,43 @@ function doDigits(action = 'do') {
     }
 
     bicerDown2[g * f - 1].textContent = `${countTheSame}`;
+
+    checkContrast();
   } else if (action === 'undo') {
     for (let i = 0; i < bicer.length; i++) {
       bicer[i].textContent = '';
     }
+  }
+}
+
+function getContrastColor(color) {
+  if (color.charAt(0) === '#') {
+    color = color.substr(1);
+  }
+  if (color.length === 3) {
+    color = color.split('').map(c => c + c).join('');
+  }
+
+  const r = parseInt(color.substr(0, 2), 16);
+  const g = parseInt(color.substr(2, 2), 16);
+  const b = parseInt(color.substr(4, 2), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  // Return black or white depending on the luminance
+  return luminance > 0.5 ? '#000' : '#fff';
+}
+
+function checkContrast() {
+  for (let i = 0; i < bicer.length; i++) {
+    let bgColor = rgbToHexNums(findNums(bicer[i].style.backgroundColor));
+    
+    if (!(i in colors) && i < bicer.length - indicator.length) {
+      bgColor = '#ffffff';
+    }
+
+    let contrastColor = getContrastColor(bgColor);
+
+    bicer[i].style.color = contrastColor;
   }
 }
 
@@ -678,38 +714,56 @@ function toTextFile() {
   let result = '';
   let countTheSame = 1;
   let countRows = 1;
-  let isFirst = true;
+  let countColumns = 1;
   
   for (let i = 1; i < dictationColors1.length; i++) {
-
-    if (dictationColors1[i - 1] === dictationColors1[i]) {
-      countTheSame++;
+    if (dictationColors1[i - 1] !== dictationColors1[i] || countColumns === g) {
+      prevResult += `${countTheSame}${dictationColors1[i - 1]} `;
+      countTheSame = 1;
+      countColumns++;
     } else {
-      if (isFirst && countTheSame - countRows + 1 > 0) {
-        prevResult += `${countTheSame - countRows + 1}${dictationColors1[i - 1]} `;
-        isFirst = false;
-      } else if (!isFirst) {
-        prevResult += `${countTheSame}${dictationColors1[i - 1]} `;
-      } else {
-        isFirst = false;
-      }
-      countTheSame = 1;
+      countTheSame++;
+      countColumns++;
     }
-    
-    if (i % (g - 1) === 0) {
-      result += `Row ${countRows} - `;
 
-      if (!isFirst) {
-        result += `${prevResult}${countTheSame + countRows - 1}${dictationColors1[i - 1]}  \n`;
-      } else {
-        result += `${prevResult}${countTheSame}${dictationColors1[i - 1]}  \n`;
-      }
-
+    if (countColumns - 1 === g) {
+      result += `Row ${countRows} - ${prevResult}  \n`;
       prevResult = '';
-      isFirst = true;
-      countTheSame = 1;
       countRows++;
+      countTheSame = 1;
+      countColumns = 1;
     }
+  }
+
+  result += `Row ${countRows} - ${prevResult}${countTheSame}${dictationColors1[dictationColors1.length - 1]}  \n`;
+
+  if (amount.checked) {
+    prevResult = '';
+    countTheSame = 1;
+    countRows = 1;
+    countColumns = 1;
+    result += `\n`;
+
+    for (let i = 1; i < dictationColors2.length; i++) {
+      if (dictationColors2[i - 1] !== dictationColors2[i] || countColumns === g) {
+        prevResult += `${countTheSame}${dictationColors2[i - 1]} `;
+        countTheSame = 1;
+        countColumns++;
+      } else {
+        countTheSame++;
+        countColumns++;
+      }
+
+      if (countColumns - 1 === g) {
+        result += `Row ${countRows} - ${prevResult}  \n`;
+        prevResult = '';
+        countRows++;
+        countTheSame = 1;
+        countColumns = 1;
+      }
+    }
+
+    result += `Row ${countRows} - ${prevResult}${countTheSame}${dictationColors2[dictationColors2.length - 1]}  \n`;
   }
 
   let o = result,
@@ -907,9 +961,12 @@ function start() {
     );
 }),
 (drawAllButton.onclick = function () {
-  for (let e = 0; e < bicer.length; e++) {
-    e >= bicer.length - indicator.length ||
-      (bicer[e].style.backgroundColor = color);
+  let bicerLength = bicer.length - indicator.length;
+
+  if (!amount.checked) bicerLength /= 2;
+
+  for (let e = 0; e < bicerLength; e++) {
+    bicer[e].style.backgroundColor = color;
     colors[e] = color;
   }
 
@@ -924,6 +981,8 @@ function start() {
         bicer[i].textContent = '';
       }
     }
+
+    checkContrast();
   }
   if (digitsView.checked) {
     doDigits();
