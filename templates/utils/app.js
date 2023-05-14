@@ -94,8 +94,12 @@ function loadJSON() {
         }, 250);
     return;
   }
-  prettyLog(180), console.log(e.type);
+  
+  prettyLog(180);
+  console.log(e.type);
+
   let t = new FileReader();
+
   t.readAsText(e),
     (t.onload = () => {
       let o = t.result,
@@ -157,6 +161,9 @@ function loadJSON() {
           alert('Something went wrong ( ⌒︹⌒ )');
         }, 250);
     });
+
+  countTypesOfColor();
+  fillIndicator();
 }
 
 function saveJSON() {
@@ -319,13 +326,16 @@ function doPattern(action = 'do') {
 
 function doDigits(action = 'do') {
   if (action === 'do') {
+    let e = +document.querySelectorAll('.step')[0].value;
     let f = +document.querySelectorAll('.width')[0].value;
     let g = +document.querySelectorAll('.length')[0].value;
     let bicerDown1 = document.querySelectorAll('.field:nth-child(1) .down .bicer');
     let bicerDown2 = document.querySelectorAll('.field:nth-child(2) .down .bicer');
+    let countRowSteps = g - e * (f / 2);
     let countTheSame = 1;
     let countRows = 1;
     let countColumns = 1;
+    let isMidpoint = false;
     
     toRead('notxt');
 
@@ -336,7 +346,7 @@ function doDigits(action = 'do') {
     for (let i = 1; i < dictationColors1.length; i++) {
       let pos = (countColumns - 1) * f + (countRows - 1);
 
-      if (dictationColors1[i - 1] !== dictationColors1[i] || countColumns === g) {
+      if (dictationColors1[i - 1] !== dictationColors1[i] || countColumns === countRowSteps) {
         bicerDown1[pos].textContent = `${countTheSame}`;
         countTheSame = 1;
         countColumns++;
@@ -345,7 +355,14 @@ function doDigits(action = 'do') {
         countColumns++;
       }
 
-      if (countColumns - 1 === g) {
+      if (countColumns - 1 === countRowSteps) {
+        if (countRowSteps !== g && !isMidpoint) {
+          countRowSteps += e;
+        } else {
+          countRowSteps -= e;
+          isMidpoint = true;
+        }
+
         countRows++;
         countTheSame = 1;
         countColumns = 1;
@@ -354,14 +371,16 @@ function doDigits(action = 'do') {
 
     bicerDown1[g * f - 1].textContent = `${countTheSame}`;
 
+    countRowSteps = g - e * (f / 2);
     countTheSame = 1;
     countRows = 1;
     countColumns = 1;
+    isMidpoint = false;
 
     for (let i = 1; i < dictationColors2.length; i++) {
       let pos = (countColumns - 1) * f + (countRows - 1);
 
-      if (dictationColors2[i - 1] !== dictationColors2[i] || countColumns === g) {
+      if (dictationColors2[i - 1] !== dictationColors2[i] || countColumns === countRowSteps) {
         bicerDown2[pos].textContent = `${countTheSame}`;
         countTheSame = 1;
         countColumns++;
@@ -370,7 +389,14 @@ function doDigits(action = 'do') {
         countColumns++;
       }
 
-      if (countColumns - 1 === g) {
+      if (countColumns - 1 === countRowSteps) {
+        if (countRowSteps !== g && !isMidpoint) {
+          countRowSteps += e;
+        } else {
+          countRowSteps -= e;
+          isMidpoint = true;
+        }
+
         countRows++;
         countTheSame = 1;
         countColumns = 1;
@@ -401,7 +427,7 @@ function getContrastColor(color) {
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
   // Return black or white depending on the luminance
-  return luminance > 0.5 ? '#000' : '#fff';
+  return luminance > 0.5 ? '#000000' : '#ffffff';
 }
 
 function checkContrast() {
@@ -623,42 +649,96 @@ function changeLength() {
 function changeStep() {
   let e = +document.querySelectorAll('.step')[0].value;
   let f = +document.querySelectorAll('.width')[0].value;
-  rowDown = document.querySelectorAll('.down .row');
+  let g = +document.querySelectorAll('.length')[0].value;
+  let rowDown1 = document.querySelectorAll('.field:nth-child(1) .down .row');
+  let rowDown2 = document.querySelectorAll('.field:nth-child(2) .down .row');
 
-  if (e == 1) {
-    for (let i = 0; i < f; i++) {
-      for (let j = f / 2 - 1; j > i; j--) {
-        document.querySelectorAll(`.field:nth-child(1) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
-        document.querySelectorAll(`.field:nth-child(2) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
-        document.querySelectorAll(`.field:nth-child(1) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
-        document.querySelectorAll(`.field:nth-child(2) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
-      }
+  if (e === 0) {
+    // Resetting down parts
+
+    for (let i = 0; i < g; i++) {
+      rowDown1[i].remove();
+      rowDown2[i].remove();
     }
-  } else if (e > 1) {
-    for (let i = 0; i < f; i++) {
-      for (let j = f / 2 - 1; j > i; j--) {
-        document.querySelectorAll(`.field:nth-child(1) .down .row:nth-last-child(${i + 2}) .bicer:last-child`)[0].remove();
-        document.querySelectorAll(`.field:nth-child(2) .down .row:nth-last-child(${i + 2}) .bicer:last-child`)[0].remove();
-        document.querySelectorAll(`.field:nth-child(1) .down .row:nth-last-child(${i + 2}) .bicer:last-child`)[0].remove();
-        document.querySelectorAll(`.field:nth-child(2) .down .row:nth-last-child(${i + 2}) .bicer:last-child`)[0].remove();
+
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < g; j++) {
+        rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+
+        for (let k = 0; k < f; k++) {
+          input = document.createElement('span');
+          input.className = 'bicer';
+          rowDiv.append(input);
+        }
+
+        document.querySelectorAll('.down')[i].insertAdjacentElement('afterbegin', rowDiv);
       }
     }
   }
+  else if (e > 0 && e <= 10) {
+    // Clearing down parts
+    for (let i = 0; i < g; i++) {
+      rowDown1[i].remove();
+      rowDown2[i].remove();
+    }
+
+    // Filling down parts as they were at start states
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < g; j++) {
+        rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+
+        for (let k = 0; k < f; k++) {
+          input = document.createElement('span');
+          input.className = 'bicer';
+          rowDiv.append(input);
+        }
+
+        document.querySelectorAll('.down')[i].insertAdjacentElement('afterbegin', rowDiv);
+      }
+    }
+
+    let countRows = 0;
+
+    for (let i = 0; i < f * (f / 2 - 1); i++) {
+      if (i % e === 0 && i >= e) countRows++;
+
+      for (let j = f / 2 - 1; j > countRows; j--) {
+        document.querySelectorAll(`.field:nth-child(1) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
+        document.querySelectorAll(`.field:nth-child(2) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
+        document.querySelectorAll(`.field:nth-child(1) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
+        document.querySelectorAll(`.field:nth-child(2) .down .row:nth-last-child(${i + 1}) .bicer`)[0].remove();
+      }
+    }
+  }
+
+  start();
 }
 
 function toRead(action = 'txt') {
   let bicerDown1 = document.querySelectorAll('.field:nth-child(1) .down .bicer');
   let bicerDown2 = document.querySelectorAll('.field:nth-child(2) .down .bicer');
+  let e = +document.querySelectorAll('.step')[0].value;
   let f = +document.querySelectorAll('.width')[0].value;
   let g = +document.querySelectorAll('.length')[0].value;
+  let countRowSteps = g - e * (f / 2);
   let countRows = 0;
   let countColumns = 0;
+  let isMidpoint = false;
 
   dictationColors1 = [];
   dictationColors2 = [];
 
   for (let i = 0; i < bicerDown1.length + f - 1; i += f) {
-    if (countRows >= g) {
+    if (countRows >= countRowSteps) {
+      if (countRowSteps !== g && !isMidpoint) {
+        countRowSteps += e;
+      } else {
+        countRowSteps -= e;
+        isMidpoint = true;
+      }
+
       countColumns++;
       i = countColumns;
       countRows = 0;
@@ -680,11 +760,21 @@ function toRead(action = 'txt') {
     countRows++;
   }
 
+  countRowSteps = g - e * (f / 2);
   countRows = 0;
   countColumns = 0;
+  isMidpoint = false;
 
   for (let i = 0; i < bicerDown2.length + f - 1; i += f) {
-    if (countRows >= g) {
+    
+    if (countRows >= countRowSteps) {
+      if (countRowSteps !== g && !isMidpoint) {
+        countRowSteps += e;
+      } else {
+        countRowSteps -= e;
+        isMidpoint = true;
+      }
+
       countColumns++;
       i = countColumns;
       countRows = 0;
