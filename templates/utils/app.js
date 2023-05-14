@@ -160,7 +160,7 @@ function loadJSON() {
 }
 
 function saveJSON() {
-  let saveFileName = prompt('Please, name your save', `beads_save_v${titleVersion}`);
+  let saveFileName = prompt('Please, name your save', `beads`);
 
   if (saveFileName === null || saveFileName.trim() === '') {
     return;
@@ -173,7 +173,11 @@ function saveJSON() {
     step = document.querySelectorAll('.step')[0];
     bicer = document.getElementsByClassName('bicer');
 
-    for (let o = -5; o < bicer.length; o++) {
+    let bicerLength = bicer.length - indicator.length;
+
+    if (!amount.checked) bicerLength /= 2;
+
+    for (let o = -5; o < bicerLength; o++) {
       if (-5 == o) {
         let e = `v${titleVersion}`;
         t.push(e);
@@ -202,9 +206,9 @@ function saveJSON() {
       }
     }
     let o = JSON.stringify(t),
-      l = saveFileName.trim(),
-      r = new File([o], l, { type: 'application/json' }),
-      n = document.querySelectorAll('.linkForSavingFile')[0];
+      l = `${saveFileName.trim()}_v${titleVersion}`,
+      r = new File([o], l, { type: "application/json" }),
+      n = document.querySelectorAll(".linkForSavingFile")[0];
     (n.href = URL.createObjectURL(r)),
     (n.download = l),
     n.click(),
