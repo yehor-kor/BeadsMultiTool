@@ -55,6 +55,8 @@ let arrowUp = document.querySelectorAll('.move-up')[0],
   lettersOfColor = {},
   dictationColors1 = [],
   dictationColors2 = [],
+  actionHistory = [],
+  actions = -1,
   z = 0,
   rowSpecial1,
   rowSpecial2,
@@ -68,6 +70,53 @@ function prettyLog(e) {
   0 == e
     ? console.log('‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾')
     : 180 == e && console.log('________________________________________');
+}
+
+function performAction() {
+  let bicerLength = bicer.length - indicator.length;
+  let history = {};
+  let c;
+
+  if (!amount.checked) bicerLength /= 2;
+
+  for (let e = 0; e < bicerLength; e++) {
+    c = rgbToHexNums(
+      findNums(c = window.getComputedStyle(bicer[e]).backgroundColor)
+    );
+
+    if (c !== '#000000' && c !== bicerHoverColor) {
+      history[e] = c;
+    }
+  }
+
+  actionHistory.push(history);
+  console.log('Performing action:', ++actions);
+}
+
+function undoAction() {
+  if (actionHistory.length > 1) {
+    // Undo the previous action
+
+    let bicerLength = bicer.length - indicator.length;
+    let lastAction = actionHistory.pop();
+
+    // Clearing all bicers
+    for (let e = 0; e < bicerLength; e++) {
+      bicer[e].style.backgroundColor = 'transparent';
+    }
+
+    if (!amount.checked) bicerLength /= 2;
+
+    for (let e = 0; e < bicerLength; e++) {
+      bicer[e].style.backgroundColor = lastAction[e];
+    }
+
+    colors = lastAction;
+
+    console.log('Undoing action:', actions--);
+  } else {
+    console.log('No actions to undo.');
+  }
 }
 
 function loadJSON() {
@@ -913,6 +962,8 @@ function start() {
   
   for (let e = 0; e < bicer.length - indicator.length; e++) {
     (bicer[e].onmousedown = function (t) {
+      performAction();
+
       if (drawAccept && 0 === t.button && !pipette) {
         if (color[0] !== '#') {
           color = rgbToHexNums(findNums(color));
@@ -1003,6 +1054,7 @@ function start() {
   changeLength();
   changeStep();
   start();
+  performAction();
 }),
 (document.body.onerror = function () {
   setTimeout(() => {
@@ -1095,6 +1147,8 @@ function start() {
   let bicerLength = bicer.length - indicator.length;
 
   if (!amount.checked) bicerLength /= 2;
+
+  performAction();
 
   for (let e = 0; e < bicerLength; e++) {
     bicer[e].style.backgroundColor = color;
@@ -1268,5 +1322,11 @@ window.addEventListener('scroll', () => {
   if (arrowUp.classList == 'move-up' 
     && 0 === document.documentElement.scrollTop) {
     arrowUp.classList.add('animated');
+  }
+}),
+document.addEventListener('keydown', function(event) {
+  // Check if the Ctrl key and Z key are pressed simultaneously
+  if (event.ctrlKey && event.code === 'KeyZ') {
+    undoAction();
   }
 });
