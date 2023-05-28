@@ -331,18 +331,18 @@ function doDigits(action = 'do') {
     let g = +document.querySelectorAll('.length')[0].value;
     let bicerDown1 = document.querySelectorAll('.field:nth-child(1) .down .bicer');
     let bicerDown2 = document.querySelectorAll('.field:nth-child(2) .down .bicer');
-    let countRowSteps = g - e * (f / 2);
+    let countRowSteps = g - e * Math.floor(f / 2);
     let countTheSame = 1;
     let countRows = 1;
     let countColumns = 1;
     let isMidpoint = false;
-    
+
     toRead('notxt');
 
     for (let i = 0; i < bicer.length; i++) {
       bicer[i].textContent = '';
     }
-    
+
     for (let i = 1; i < dictationColors1.length; i++) {
       let pos = (countColumns - 1) * f + (countRows - 1);
 
@@ -356,11 +356,14 @@ function doDigits(action = 'do') {
       }
 
       if (countColumns - 1 === countRowSteps) {
-        if (countRowSteps !== g && !isMidpoint) {
-          countRowSteps += e;
-        } else {
-          countRowSteps -= e;
+        if (countRowSteps === g) {
           isMidpoint = true;
+        }
+
+        if (isMidpoint) {
+          countRowSteps -= e;
+        } else {
+          countRowSteps += e;
         }
 
         countRows++;
@@ -369,9 +372,9 @@ function doDigits(action = 'do') {
       }
     }
 
-    bicerDown1[g * f - 1].textContent = `${countTheSame}`;
+    bicerDown1[bicerDown1.length - 1].textContent = `${countTheSame}`;
 
-    countRowSteps = g - e * (f / 2);
+    countRowSteps = g - e * Math.floor(f / 2);
     countTheSame = 1;
     countRows = 1;
     countColumns = 1;
@@ -390,11 +393,14 @@ function doDigits(action = 'do') {
       }
 
       if (countColumns - 1 === countRowSteps) {
-        if (countRowSteps !== g && !isMidpoint) {
-          countRowSteps += e;
-        } else {
-          countRowSteps -= e;
+        if (countRowSteps === g) {
           isMidpoint = true;
+        }
+
+        if (isMidpoint) {
+          countRowSteps -= e;
+        } else {
+          countRowSteps += e;
         }
 
         countRows++;
@@ -403,7 +409,7 @@ function doDigits(action = 'do') {
       }
     }
 
-    bicerDown2[g * f - 1].textContent = `${countTheSame}`;
+    bicerDown2[bicerDown2.length - 1].textContent = `${countTheSame}`;
 
     checkContrast();
   } else if (action === 'undo') {
@@ -722,26 +728,29 @@ function toRead(action = 'txt') {
   let e = +document.querySelectorAll('.step')[0].value;
   let f = +document.querySelectorAll('.width')[0].value;
   let g = +document.querySelectorAll('.length')[0].value;
-  let countRowSteps = g - e * (f / 2);
-  let countRows = 0;
+  let countRowSteps = g - e * Math.floor(f / 2);
   let countColumns = 0;
+  let countRows = 0;
   let isMidpoint = false;
 
   dictationColors1 = [];
   dictationColors2 = [];
 
   for (let i = 0; i < bicerDown1.length + f - 1; i += f) {
-    if (countRows >= countRowSteps) {
-      if (countRowSteps !== g && !isMidpoint) {
-        countRowSteps += e;
-      } else {
-        countRowSteps -= e;
+    if (countColumns >= countRowSteps) {
+      if (countRowSteps === g) {
         isMidpoint = true;
       }
 
-      countColumns++;
-      i = countColumns;
-      countRows = 0;
+      if (isMidpoint) {
+        countRowSteps -= e;
+      } else {
+        countRowSteps += e;
+      }
+
+      countRows++;
+      i = countRows;
+      countColumns = 0;
     }
 
     let t = findNums(bicerDown1[i].style.backgroundColor);
@@ -757,27 +766,29 @@ function toRead(action = 'txt') {
       }
     }
     
-    countRows++;
+    countColumns++;
   }
 
-  countRowSteps = g - e * (f / 2);
-  countRows = 0;
+  countRowSteps = g - e * Math.floor(f / 2);
   countColumns = 0;
+  countRows = 0;
   isMidpoint = false;
 
   for (let i = 0; i < bicerDown2.length + f - 1; i += f) {
-    
-    if (countRows >= countRowSteps) {
-      if (countRowSteps !== g && !isMidpoint) {
-        countRowSteps += e;
-      } else {
-        countRowSteps -= e;
+    if (countColumns >= countRowSteps) {
+      if (countRowSteps === g) {
         isMidpoint = true;
       }
 
-      countColumns++;
-      i = countColumns;
-      countRows = 0;
+      if (isMidpoint) {
+        countRowSteps -= e;
+      } else {
+        countRowSteps += e;
+      }
+
+      countRows++;
+      i = countRows;
+      countColumns = 0;
     }
 
     let t = findNums(bicerDown2[i].style.backgroundColor);
@@ -793,7 +804,7 @@ function toRead(action = 'txt') {
       }
     }
     
-    countRows++;
+    countColumns++;
   }
   
   // write in file
@@ -803,15 +814,19 @@ function toRead(action = 'txt') {
 }
 
 function toTextFile() {
+  let e = +document.querySelectorAll('.step')[0].value;
+  let f = +document.querySelectorAll('.width')[0].value;
   let g = +document.querySelectorAll('.length')[0].value;
   let prevResult = '';
   let result = '';
+  let countRowSteps = g - e * Math.floor(f / 2);
   let countTheSame = 1;
   let countRows = 1;
   let countColumns = 1;
+  let isMidpoint = false;
   
   for (let i = 1; i < dictationColors1.length; i++) {
-    if (dictationColors1[i - 1] !== dictationColors1[i] || countColumns === g) {
+    if (dictationColors1[i - 1] !== dictationColors1[i] || countColumns === countRowSteps) {
       prevResult += `${countTheSame}${dictationColors1[i - 1]} `;
       countTheSame = 1;
       countColumns++;
@@ -820,7 +835,17 @@ function toTextFile() {
       countColumns++;
     }
 
-    if (countColumns - 1 === g) {
+    if (countColumns - 1 === countRowSteps) {
+      if (countRowSteps === g) {
+        isMidpoint = true;
+      }
+
+      if (isMidpoint) {
+        countRowSteps -= e;
+      } else {
+        countRowSteps += e;
+      }
+
       result += `Row ${countRows} - ${prevResult}  \n`;
       prevResult = '';
       countRows++;
@@ -833,13 +858,15 @@ function toTextFile() {
 
   if (amount.checked) {
     prevResult = '';
+    countRowSteps = g - e * Math.floor(f / 2);
     countTheSame = 1;
     countRows = 1;
     countColumns = 1;
+    isMidpoint = false;
     result += `\n`;
 
     for (let i = 1; i < dictationColors2.length; i++) {
-      if (dictationColors2[i - 1] !== dictationColors2[i] || countColumns === g) {
+      if (dictationColors2[i - 1] !== dictationColors2[i] || countColumns === countRowSteps) {
         prevResult += `${countTheSame}${dictationColors2[i - 1]} `;
         countTheSame = 1;
         countColumns++;
@@ -848,7 +875,17 @@ function toTextFile() {
         countColumns++;
       }
 
-      if (countColumns - 1 === g) {
+      if (countColumns - 1 === countRowSteps) {
+        if (countRowSteps === g) {
+          isMidpoint = true;
+        }
+
+        if (isMidpoint) {
+          countRowSteps -= e;
+        } else {
+          countRowSteps += e;
+        }
+
         result += `Row ${countRows} - ${prevResult}  \n`;
         prevResult = '';
         countRows++;
