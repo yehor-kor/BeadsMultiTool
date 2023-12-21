@@ -385,6 +385,8 @@ function doDigits(action = 'do') {
     let countRows = 1;
     let countColumns = 1;
     let isMidpoint = false;
+    let acc = (countRowSteps - 1) * f;
+    let shifts = findShifts();
 
     toRead('notxt');
 
@@ -395,7 +397,21 @@ function doDigits(action = 'do') {
     for (let i = 1; i < dictationColors1.length; i++) {
       let pos = (countColumns - 1) * f + (countRows - 1);
 
+      
       if (dictationColors1[i - 1] !== dictationColors1[i] || countColumns === countRowSteps) {
+        if (
+          countColumns === countRowSteps
+          && countColumns > g - e * Math.floor(f / 2)
+        ) {
+          if (countRows - 1 <= Math.floor(f / 2)) {
+            acc += shifts[countRows - 1] + 1;
+          } else {
+            acc -= shifts[f - countRows + 1] - 1;
+          }
+  
+          pos = acc;
+        }
+
         bicerDown1[pos].textContent = `${countTheSame}`;
         countTheSame = 1;
         countColumns++;
@@ -421,16 +437,32 @@ function doDigits(action = 'do') {
       }
     }
 
-    bicerDown1[bicerDown1.length - 1].textContent = `${countTheSame}`;
+    if (e === 0) {
+      bicerDown1[bicerDown1.length - 1].textContent = `${countTheSame}`;
+    }
 
     countRowSteps = g - e * Math.floor(f / 2);
     countTheSame = 1;
     countRows = 1;
     countColumns = 1;
     isMidpoint = false;
+    acc = (countRowSteps - 1) * f;
 
     for (let i = 1; i < dictationColors2.length; i++) {
       let pos = (countColumns - 1) * f + (countRows - 1);
+
+      if (
+        countColumns === countRowSteps &&
+        countColumns > g - e * Math.floor(f / 2)
+      ) {
+        if (countRows - 1 <= Math.floor(f / 2)) {
+          acc += shifts[countRows - 1] + 1;
+        } else {
+          acc -= shifts[f - countRows + 1] - 1;
+        }
+
+        pos = acc;
+      }
 
       if (dictationColors2[i - 1] !== dictationColors2[i] || countColumns === countRowSteps) {
         bicerDown2[pos].textContent = `${countTheSame}`;
@@ -458,7 +490,9 @@ function doDigits(action = 'do') {
       }
     }
 
-    bicerDown2[bicerDown2.length - 1].textContent = `${countTheSame}`;
+    if (e === 0) {
+      bicerDown2[bicerDown2.length - 1].textContent = `${countTheSame}`;
+    }
 
     checkContrast();
   } else if (action === 'undo') {
@@ -781,11 +815,19 @@ function toRead(action = 'txt') {
   let countColumns = 0;
   let countRows = 0;
   let isMidpoint = false;
+  let bicerDown1Length = bicerDown1.length;
+  let bicerDown2Length = bicerDown2.length;
+  let shifts = findShifts();
 
   dictationColors1 = [];
   dictationColors2 = [];
 
-  for (let i = 0; i < bicerDown1.length + f - 1; i += f) {
+  if (e === 0) {
+    bicerDown1Length += f - 1;
+    bicerDown2Length += f - 1;
+  }
+
+  for (let i = 0; i < bicerDown1Length; ) {
     if (countColumns >= countRowSteps) {
       if (countRowSteps === g) {
         isMidpoint = true;
@@ -814,6 +856,12 @@ function toRead(action = 'txt') {
         dictationColors1.push(alphabet[j].toUpperCase());
       }
     }
+
+    if (countColumns < g - e * Math.floor(f / 2)) {
+      i += f;
+    } else {
+      i += shifts[countColumns - (g - e * Math.floor(f / 2))];
+    }
     
     countColumns++;
   }
@@ -823,7 +871,7 @@ function toRead(action = 'txt') {
   countRows = 0;
   isMidpoint = false;
 
-  for (let i = 0; i < bicerDown2.length + f - 1; i += f) {
+  for (let i = 0; i < bicerDown2Length; i += shifts[countRows]) {
     if (countColumns >= countRowSteps) {
       if (countRowSteps === g) {
         isMidpoint = true;
@@ -953,6 +1001,35 @@ function toTextFile() {
   n.href = URL.createObjectURL(r);
   n.download = l;
   n.click();
+}
+
+function findShifts() {
+  let e = +document.querySelectorAll('.step')[0].value;
+  let f = +document.querySelectorAll('.width')[0].value;
+  let shifts = [];
+  let sum = f;
+
+  if (e === 0) {
+    for (let i = 0; i < f; i++) {
+      shifts[i] = f;
+    }
+  } else if (e > 0 && e <= 10) {
+    for (let i = 0; i < f; i++) {
+      if (i === 1) {
+        sum--;
+      } else if (i > 1 && i <= Math.floor(f / 2)) {
+        sum -= 2;
+      } else if (i > Math.floor(f / 2) && i < f - 1) {
+        sum += 2;
+      } else if (i === f - 1) {
+        sum++;
+      }
+
+      shifts[i] = sum;
+    }
+  }
+
+  return shifts;
 }
 
 function start() {
